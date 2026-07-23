@@ -243,12 +243,33 @@
       stroke-width: 1;
     }
 
-    /* Painéis acima das setas nas áreas de conteúdo */
+    /* Painéis: conteúdo acima das setas; fundo pode ficar abaixo */
     .painel {
       position: relative;
       border-radius: 12px;
       background: #fff;
+      z-index: 2;
+    }
+
+    .canais,
+    .terceiro {
       z-index: 5;
+    }
+
+    .core .pill,
+    .core .promo,
+    .core .nota-pgto,
+    .core .rotulo,
+    .back .card,
+    .back .rotulo,
+    .canais .rotulo,
+    .terceiro .rotulo {
+      position: relative;
+      z-index: 6;
+    }
+
+    .back {
+      z-index: 2;
     }
 
     .rotulo {
