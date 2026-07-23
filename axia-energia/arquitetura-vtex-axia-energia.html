@@ -1043,22 +1043,24 @@
          L ${xCore} ${pagamentos.y}`
       );
 
-      // 4) OMS (borda inferior do Core) → túnel → SAP (borda superior do Back)
-      // Nunca atravessa o texto da Camada de Integração
+      // 4) OMS → SAP: só nos vãos horizontais entre as linhas do grid + túnel
+      // Nunca atravessa o texto da Camada de Integração nem as caixas
       const xTun = tunnel.x;
+      const yGap1 = (core.b + tunnel.t) / 2;
+      const yGap2 = (tunnel.b + back.t) / 2;
       document.getElementById("p4").setAttribute(
         "d",
         `M ${oms.x} ${core.b}
-         L ${oms.x} ${tunnel.t}
-         L ${xTun} ${tunnel.t}
-         L ${xTun} ${tunnel.b}
-         L ${sap.x} ${tunnel.b}
+         L ${oms.x} ${yGap1}
+         L ${xTun} ${yGap1}
+         L ${xTun} ${yGap2}
+         L ${sap.x} ${yGap2}
          L ${sap.x} ${back.t}`
       );
 
       setLabel("g1", xLane, (cepel.y + checkout.y) / 2, "popula carrinho");
       setLabel("g2", xLane + 12, (bb.y + pagamentos.y) / 2, "Pix / Boleto");
-      setLabel("g4", xTun + 8, tunnel.y, "API aberta VTEX");
+      setLabel("g4", xTun, (yGap1 + yGap2) / 2, "API aberta VTEX");
     }
 
     window.addEventListener("load", desenhar);
