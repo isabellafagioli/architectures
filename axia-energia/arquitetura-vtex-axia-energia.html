@@ -6,106 +6,128 @@
   <title>Arquitetura VTEX — Axia Energia</title>
   <style>
     /*
-      Estilo alinhado às arquiteturas de referência VTEX:
-      rosa suave, cinza, flat, cantos arredondados, conectores ortogonais.
-      https://developers.vtex.com/docs/guides/understanding-vtex-reference-architectures
+      Brand: brand.vtex.com via skill vtex-brand-guidelines
+      Architecture modules: VTEX reference architecture conventions
     */
     :root {
-      --pink: #F7C6D6;
-      --pink-border: #E89BB3;
-      --pink-strong: #E31C58;
-      --pink-text: #9B3050;
-      --gray-bg: #F2F2F2;
-      --gray-panel: #EBEBEB;
-      --gray-line: #C8C8C8;
-      --gray-text: #555555;
-      --ink: #333333;
-      --white: #FFFFFF;
-      --sync: #4A6FA5;
-      --async: #555555;
+      --rebel-pink: #F71963;
+      --heavy-pink: #DD1659;
+      --serious-black: #142032;
+      --plain-white: #FFFFFF;
+      --soft-blue: #F5F9FF;
+      --soft-pink: #FFF3F6;
+      --yogurt-pink: #FFE0EF;
+      --bubble-gum: #FFC4DD;
+      --winter-gray: #E7E9EE;
+      --cool-gray: #A1A8B7;
+      --serious-gray: #5B6E84;
+      --arch-pink: #FFC4DD;
+      --arch-pink-border: #F71963;
+      --arch-pink-text: #9B3050;
+      --sync: #134CD8;
+      --async: #142032;
       --manual: #A66A3A;
-      --hl: #F6E59B;
+      --hl: #FFE08A;
+      --font: "VTEX Trust", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      color: var(--ink);
-      background-color: #F5F5F5;
+      font-family: var(--font);
+      color: var(--serious-black);
+      background-color: var(--soft-blue);
       background-image:
-        linear-gradient(rgba(0,0,0,0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,0,0,0.035) 1px, transparent 1px);
+        linear-gradient(rgba(20,32,50,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(20,32,50,0.04) 1px, transparent 1px);
       background-size: 20px 20px;
       min-height: 100vh;
-      padding: 40px 24px 56px;
+      padding: 32px 24px 56px;
+      line-height: 1.5;
     }
 
-    .wrap {
-      max-width: 1120px;
-      margin: 0 auto;
+    .wrap { max-width: 1120px; margin: 0 auto; }
+
+    .brand-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .vtex-logo { display: block; height: 28px; width: auto; }
+
+    .brand-bar .meta {
+      font-size: 12px;
+      color: var(--serious-gray);
+      text-align: right;
     }
 
     .titulo {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--ink);
-      margin-bottom: 6px;
-      letter-spacing: -0.01em;
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--serious-black);
+      line-height: 1;
+      letter-spacing: normal;
+      margin-bottom: 10px;
+    }
+
+    .titulo em {
+      font-style: normal;
+      color: var(--rebel-pink);
     }
 
     .subtitulo {
+      font-size: 14px;
+      color: var(--serious-gray);
+      max-width: 640px;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .doc-ref {
       font-size: 12px;
-      color: var(--gray-text);
-      margin-bottom: 18px;
-      max-width: 620px;
-      line-height: 1.45;
+      color: var(--cool-gray);
+      margin-bottom: 20px;
+    }
+
+    .doc-ref a { color: var(--rebel-pink); text-decoration: none; }
+
+    .accent {
+      width: 48px;
+      height: 3px;
+      background: var(--rebel-pink);
+      border-radius: 2px;
+      margin: 14px 0 22px;
     }
 
     .legenda {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px 14px;
-      margin-bottom: 20px;
-      font-size: 11px;
-      color: var(--gray-text);
+      gap: 8px 16px;
+      margin-bottom: 18px;
+      font-size: 12px;
+      color: var(--serious-gray);
     }
 
-    .legenda span {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
+    .legenda span { display: inline-flex; align-items: center; gap: 6px; }
 
     .sw {
-      width: 18px;
-      height: 12px;
-      border-radius: 3px;
-      flex-shrink: 0;
+      width: 18px; height: 12px; border-radius: 3px; flex-shrink: 0;
     }
-
-    .sw.nativo { background: var(--pink); border: 1px solid var(--pink-border); }
-    .sw.terceiro { background: var(--white); border: 1px solid #222; }
-    .sw.back { background: var(--gray-panel); border: 1px solid #222; }
-    .sw.opc { background: var(--gray-bg); border: 1px dashed #999; }
+    .sw.nativo { background: var(--bubble-gum); border: 1px solid var(--rebel-pink); }
+    .sw.terceiro { background: var(--plain-white); border: 1px solid var(--serious-black); }
+    .sw.back { background: var(--winter-gray); border: 1px solid var(--serious-black); }
+    .sw.opc { background: var(--soft-blue); border: 1px dashed var(--cool-gray); }
 
     .ln {
-      width: 18px;
-      height: 0;
-      border-top: 2px solid;
-      position: relative;
-      display: inline-block;
+      width: 18px; height: 0; border-top: 2px solid; position: relative; display: inline-block;
     }
-
     .ln::after {
-      content: "";
-      position: absolute;
-      right: -1px;
-      top: -4px;
-      border: 4px solid transparent;
-      border-right-width: 0;
+      content: ""; position: absolute; right: -1px; top: -4px;
+      border: 4px solid transparent; border-right-width: 0;
     }
-
     .ln.sync { border-color: var(--sync); }
     .ln.sync::after { border-left-color: var(--sync); }
     .ln.async { border-color: var(--async); }
@@ -113,7 +135,6 @@
     .ln.manual { border-color: var(--manual); border-top-style: dashed; }
     .ln.manual::after { border-left-color: var(--manual); }
 
-    /* Diagrama principal */
     .diagrama {
       position: relative;
       display: grid;
@@ -123,8 +144,8 @@
         "integ integ integ integ"
         "back back back back";
       gap: 18px 14px;
-      background: var(--gray-bg);
-      border: 1px solid var(--gray-line);
+      background: var(--plain-white);
+      border: 1px solid var(--winter-gray);
       border-radius: 16px;
       padding: 28px 18px 18px;
     }
@@ -132,453 +153,205 @@
     .lane { grid-area: lane; }
 
     .fluxo-svg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 2;
-      overflow: visible;
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 2; overflow: visible;
     }
-
     .fluxo-svg path {
-      fill: none;
-      stroke-width: 1.75;
-      stroke-linecap: square;
-      stroke-linejoin: miter;
+      fill: none; stroke-width: 1.75; stroke-linecap: square; stroke-linejoin: miter;
     }
-
     .path-sync { stroke: var(--sync); }
     .path-async { stroke: var(--async); }
-
     .fluxo-svg text {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      font-size: 9.5px;
-      font-weight: 600;
+      font-family: var(--font); font-size: 9.5px; font-weight: 600;
     }
-
     .lbl-sync { fill: var(--sync); }
     .lbl-async { fill: var(--async); }
-    .lbl-bg {
-      fill: var(--gray-bg);
-      stroke: var(--gray-line);
-      stroke-width: 1;
-    }
+    .lbl-bg { fill: var(--plain-white); stroke: var(--winter-gray); stroke-width: 1; }
 
     .painel {
-      position: relative;
-      border-radius: 12px;
-      background: var(--white);
-      z-index: 10;
+      position: relative; border-radius: 12px; background: var(--plain-white); z-index: 10;
     }
 
     .rotulo {
-      position: absolute;
-      top: -9px;
-      left: 12px;
-      background: var(--gray-bg);
-      padding: 0 7px;
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--ink);
-      white-space: nowrap;
-      z-index: 11;
+      position: absolute; top: -9px; left: 12px;
+      background: var(--plain-white);
+      padding: 0 7px; font-size: 11px; font-weight: 600;
+      color: var(--serious-black); white-space: nowrap; z-index: 11;
     }
+    .core > .rotulo { color: var(--rebel-pink); }
 
-    .core > .rotulo {
-      color: var(--pink-strong);
-      background: linear-gradient(180deg, var(--gray-bg) 40%, var(--white));
-    }
-
-    /* Canais */
     .canais {
-      grid-area: canais;
-      border: 1.5px solid #222;
-      padding: 22px 10px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      grid-area: canais; border: 1.5px solid var(--serious-black);
+      padding: 22px 10px 12px; display: flex; flex-direction: column; gap: 8px;
     }
-
     .canal {
-      background: var(--white);
-      border: 1px solid #222;
-      border-radius: 8px;
-      padding: 12px 8px;
-      text-align: center;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--ink);
+      background: var(--plain-white); border: 1px solid var(--serious-black);
+      border-radius: 8px; padding: 12px 8px; text-align: center;
+      font-size: 12px; font-weight: 600; color: var(--serious-black);
     }
-
     .canal small {
-      display: block;
-      margin-top: 3px;
-      font-size: 9px;
-      font-weight: 400;
-      color: var(--gray-text);
+      display: block; margin-top: 3px; font-size: 10px; font-weight: 400; color: var(--serious-gray);
     }
 
-    /* Core VTEX — rosa suave como nas referências */
     .core {
       grid-area: core;
-      border: 2px solid var(--pink-border);
-      background: #FDF2F6;
+      border: 2px solid var(--rebel-pink);
+      background: var(--soft-pink);
       padding: 22px 14px 14px;
     }
 
-    .modulos {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-    }
+    .modulos { display: flex; flex-wrap: wrap; gap: 7px; }
 
     .pill {
-      background: var(--pink);
-      border: 1px solid var(--pink-border);
-      color: var(--pink-text);
+      background: var(--bubble-gum);
+      border: 1px solid var(--rebel-pink);
+      color: var(--arch-pink-text);
       border-radius: 999px;
       padding: 7px 11px;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
       position: relative;
       z-index: 6;
     }
-
     .pill.destaque {
       background: var(--hl);
       border-color: #E0C45A;
-      color: #6A5600;
-      box-shadow: inset 0 0 0 1px rgba(224, 196, 90, 0.35);
+      color: #5C4A00;
     }
 
     .fluxo-interno {
-      margin: 14px 0 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--async);
-      position: relative;
-      z-index: 6;
+      margin: 14px 0 10px; display: flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 600; color: var(--async); position: relative; z-index: 6;
     }
-
     .fluxo-interno .bar {
-      width: 56px;
-      height: 1.75px;
-      background: var(--async);
-      position: relative;
+      width: 56px; height: 1.75px; background: var(--async); position: relative;
     }
-
     .fluxo-interno .bar::after {
-      content: "";
-      position: absolute;
-      right: -1px;
-      top: 50%;
-      transform: translateY(-50%);
-      border: 4px solid transparent;
-      border-left-color: var(--async);
-      border-right-width: 0;
+      content: ""; position: absolute; right: -1px; top: 50%; transform: translateY(-50%);
+      border: 4px solid transparent; border-left-color: var(--async); border-right-width: 0;
     }
-
-    .fluxo-interno .meta {
-      font-weight: 500;
-      color: var(--gray-text);
-    }
+    .fluxo-interno .meta { font-weight: 400; color: var(--serious-gray); }
 
     .promo-explica {
-      position: relative;
-      z-index: 6;
-      max-width: 520px;
-      margin-bottom: 8px;
-      padding-left: 10px;
-      border-left: 2px solid var(--pink-border);
+      position: relative; z-index: 6; max-width: 520px; margin-bottom: 8px;
+      padding-left: 10px; border-left: 2px solid var(--rebel-pink);
     }
-
     .promo-explica strong {
-      display: block;
-      font-size: 11px;
-      color: var(--pink-text);
-      margin-bottom: 2px;
-      font-weight: 600;
+      display: block; font-size: 12px; color: var(--rebel-pink); margin-bottom: 2px; font-weight: 600;
     }
+    .promo-explica p { font-size: 12px; color: var(--serious-gray); line-height: 1.5; }
 
-    .promo-explica p {
-      font-size: 10.5px;
-      color: var(--gray-text);
-      line-height: 1.4;
-    }
+    .nota { font-size: 11px; color: var(--serious-gray); position: relative; z-index: 6; }
 
-    .nota {
-      font-size: 10px;
-      color: var(--gray-text);
-      position: relative;
-      z-index: 6;
-    }
-
-    /* Terceiros */
     .terceiro {
-      grid-area: terceiro;
-      border: 1.5px solid #222;
-      padding: 22px 10px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      grid-area: terceiro; border: 1.5px solid var(--serious-black);
+      padding: 22px 10px 12px; display: flex; flex-direction: column; gap: 10px;
     }
 
     .card {
-      background: var(--white);
-      border: 1px solid #222;
-      border-radius: 10px;
-      padding: 14px 8px 10px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      position: relative;
-      z-index: 6;
-      min-height: 96px;
+      background: var(--plain-white); border: 1px solid var(--serious-black);
+      border-radius: 10px; padding: 14px 8px 10px; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      position: relative; z-index: 6; min-height: 96px;
     }
-
     .chip {
-      position: absolute;
-      top: -7px;
-      right: 7px;
-      font-size: 8px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: #E8EEF6;
-      color: var(--sync);
+      position: absolute; top: -7px; right: 7px; font-size: 9px; font-weight: 600;
+      text-transform: none; letter-spacing: 0; padding: 2px 6px; border-radius: 4px;
+      background: #E8EEF6; color: var(--sync);
     }
-
-    .chip.async { background: #EEE; color: var(--async); }
+    .chip.async { background: var(--winter-gray); color: var(--serious-black); }
     .chip.manual { background: #F3E7DA; color: var(--manual); }
 
     .card svg {
-      display: block;
-      height: 24px !important;
-      width: auto !important;
-      max-width: 88px !important;
+      display: block; height: 24px !important; width: auto !important; max-width: 88px !important;
     }
-
     .card svg[aria-label="Banco do Brasil"] {
-      height: 26px !important;
-      max-width: 26px !important;
+      height: 26px !important; max-width: 26px !important;
     }
+    .papel { font-size: 11px; color: var(--serious-gray); line-height: 1.35; }
 
-    .papel {
-      font-size: 9.5px;
-      color: var(--gray-text);
-      line-height: 1.3;
-    }
-
-    /* Integração */
     .integ-wrap {
-      grid-area: integ;
-      display: grid;
-      grid-template-columns: 96px 1fr;
-      gap: 10px;
-      z-index: 2;
+      grid-area: integ; display: grid; grid-template-columns: 96px 1fr; gap: 10px; z-index: 2;
     }
-
     .integ-tunnel { min-height: 40px; }
-
     .integ {
-      border: 1.5px dashed #999;
-      background: #E6E6E6;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      color: #666;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      padding: 10px;
-      z-index: 5;
-      position: relative;
+      border: 1.5px dashed var(--cool-gray); background: var(--winter-gray);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px;
+      font-size: 12px; font-weight: 600; color: var(--serious-gray);
+      letter-spacing: normal; text-transform: none; padding: 10px; z-index: 5; position: relative;
     }
+    .integ .opt { font-weight: 400; font-size: 11px; color: var(--cool-gray); }
 
-    .integ .opt {
-      text-transform: none;
-      letter-spacing: 0;
-      font-weight: 400;
-      font-size: 10px;
-      color: #888;
-    }
-
-    /* Back office */
     .back {
-      grid-area: back;
-      border: 1.5px solid #222;
-      background: var(--gray-panel);
-      padding: 22px 14px 14px;
-      border-radius: 12px;
+      grid-area: back; border: 1.5px solid var(--serious-black);
+      background: var(--winter-gray); padding: 22px 14px 14px; border-radius: 12px;
     }
-
-    .back > .rotulo {
-      background: linear-gradient(180deg, var(--gray-bg) 40%, var(--gray-panel));
-    }
-
-    .back .card { background: var(--white); }
+    .back > .rotulo { background: var(--winter-gray); }
+    .back .card { background: var(--plain-white); }
 
     .back-row {
-      display: grid;
-      grid-template-columns: minmax(0, 190px) 64px minmax(0, 190px);
-      align-items: center;
-      max-width: 480px;
+      display: grid; grid-template-columns: minmax(0, 190px) 64px minmax(0, 190px);
+      align-items: center; max-width: 480px;
     }
-
     .bridge {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      color: var(--manual);
-      z-index: 6;
-      position: relative;
-      padding: 0 4px;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      color: var(--manual); z-index: 6; position: relative; padding: 0 4px;
     }
-
     .bridge .bar {
-      width: 100%;
-      border-top: 1.75px dashed var(--manual);
-      position: relative;
+      width: 100%; border-top: 1.75px dashed var(--manual); position: relative;
     }
-
     .bridge .bar::after {
-      content: "";
-      position: absolute;
-      right: -1px;
-      top: -4px;
-      border: 4px solid transparent;
-      border-left-color: var(--manual);
-      border-right-width: 0;
+      content: ""; position: absolute; right: -1px; top: -4px;
+      border: 4px solid transparent; border-left-color: var(--manual); border-right-width: 0;
     }
-
     .bridge span {
-      font-size: 9px;
-      font-weight: 700;
-      background: var(--gray-panel);
-      padding: 1px 5px;
-      border-radius: 3px;
+      font-size: 10px; font-weight: 600; background: var(--winter-gray);
+      padding: 1px 5px; border-radius: 3px;
     }
 
-    /* Fluxo inferior — limpo e flat */
     .faixa {
-      margin-top: 18px;
-      background: var(--white);
-      border: 1px solid var(--gray-line);
-      border-radius: 12px;
-      padding: 14px 14px 12px;
-      overflow-x: auto;
+      margin-top: 18px; background: var(--plain-white); border: 1px solid var(--winter-gray);
+      border-radius: 12px; padding: 16px 14px 12px; overflow-x: auto;
     }
-
     .faixa h2 {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--ink);
-      margin-bottom: 10px;
+      font-size: 16px; font-weight: 400; color: var(--serious-black);
+      line-height: 1.2; margin-bottom: 12px;
     }
-
-    .passos {
-      display: flex;
-      align-items: stretch;
-      min-width: 760px;
-    }
-
+    .passos { display: flex; align-items: stretch; min-width: 760px; }
     .passo {
-      flex: 1;
-      background: var(--gray-bg);
-      border: 1px solid var(--gray-line);
-      border-radius: 10px;
-      padding: 10px 8px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
+      flex: 1; background: var(--soft-blue); border: 1px solid var(--winter-gray);
+      border-radius: 10px; padding: 10px 8px; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
     }
-
     .passo.manual { background: #F7F0EA; border-color: #D9C0A8; }
-
     .passo .n {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--sync);
-      color: #fff;
-      font-size: 10px;
-      font-weight: 700;
-      display: grid;
-      place-items: center;
+      width: 18px; height: 18px; border-radius: 50%; background: var(--sync);
+      color: #fff; font-size: 10px; font-weight: 600; display: grid; place-items: center;
     }
-
     .passo.async-step .n { background: var(--async); }
     .passo.manual .n { background: var(--manual); }
-
-    .passo .nome { font-size: 11px; font-weight: 700; }
-    .passo .desc {
-      font-size: 9.5px;
-      color: var(--gray-text);
-      line-height: 1.35;
-      max-width: 124px;
-    }
-
-    .passo .tipo {
-      font-size: 8.5px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
+    .passo .nome { font-size: 12px; font-weight: 600; color: var(--serious-black); }
+    .passo .desc { font-size: 11px; color: var(--serious-gray); line-height: 1.4; max-width: 124px; }
+    .passo .tipo { font-size: 10px; font-weight: 600; color: var(--cool-gray); }
     .passo .tipo.sync { color: var(--sync); }
     .passo .tipo.async { color: var(--async); }
     .passo .tipo.man { color: var(--manual); }
 
     .seta {
-      flex: 0 0 24px;
-      display: grid;
-      place-items: center;
-      color: var(--sync);
-      font-size: 14px;
-      font-weight: 600;
+      flex: 0 0 24px; display: grid; place-items: center;
+      color: var(--sync); font-size: 14px; font-weight: 600;
     }
-
     .seta.async { color: var(--async); }
     .seta.man { color: var(--manual); }
 
     .rodape {
-      margin-top: 14px;
-      text-align: center;
-      font-size: 10px;
-      color: #888;
+      margin-top: 18px; text-align: left; font-size: 12px; color: var(--cool-gray);
     }
-
-    .doc-ref {
-      margin-top: 8px;
-      font-size: 10px;
-      color: #888;
-    }
-
-    .doc-ref a { color: var(--pink-strong); }
 
     @media (max-width: 900px) {
       .diagrama {
         grid-template-columns: 1fr;
-        grid-template-areas:
-          "canais"
-          "core"
-          "terceiro"
-          "integ"
-          "back";
+        grid-template-areas: "canais" "core" "terceiro" "integ" "back";
       }
       .lane, .fluxo-svg, .integ-tunnel { display: none; }
       .integ-wrap { grid-template-columns: 1fr; }
@@ -591,15 +364,23 @@
 </head>
 <body>
   <div class="wrap">
-    <h1 class="titulo">Arquitetura VTEX — Axia Energia</h1>
+    <div class="brand-bar">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="#F71963" width="96" height="35" class="vtex-logo" viewBox="0 0 80 29" > <path d="M57.555 10.8821H54.8207V20.2055C54.8205 20.2904 54.7865 20.3719 54.7262 20.4319C54.6658 20.492 54.5839 20.5258 54.4986 20.526H52.3899C52.3045 20.5258 52.2227 20.492 52.1623 20.4319C52.1019 20.3719 52.0679 20.2904 52.0677 20.2055V10.8821H49.3174C49.276 10.8838 49.2347 10.8771 49.1959 10.8626C49.1571 10.8481 49.1216 10.826 49.0916 10.7976C49.0615 10.7692 49.0375 10.7351 49.021 10.6973C49.0044 10.6595 48.9957 10.6187 48.9953 10.5775V8.9284C48.9957 8.88716 49.0044 8.84643 49.021 8.80862C49.0375 8.7708 49.0615 8.73668 49.0916 8.70827C49.1216 8.67987 49.1571 8.65776 49.1959 8.64325C49.2347 8.62875 49.276 8.62215 49.3174 8.62384H57.5543C57.6397 8.61986 57.7232 8.64966 57.7865 8.70672C57.8499 8.76378 57.888 8.84348 57.8925 8.9284V10.5782C57.8878 10.6628 57.8497 10.7423 57.7865 10.7992C57.7233 10.8561 57.6401 10.8859 57.555 10.8821Z" fill="#F71963"/> <path d="M66.3331 20.459C65.7697 20.5388 64.8219 20.6671 63.0835 20.6671C61.0069 20.6671 59.1723 20.1384 59.1723 17.2239V11.9042C59.1723 8.98969 61.0237 8.47701 63.0996 8.47701C64.8373 8.47701 65.7697 8.60534 66.3331 8.68514C66.5583 8.71706 66.6553 8.79752 66.6553 9.00565V10.4972C66.6551 10.5821 66.6211 10.6635 66.5607 10.7236C66.5003 10.7837 66.4185 10.8175 66.3331 10.8177H62.9392C62.1826 10.8177 61.9092 11.0737 61.9092 11.9069V13.3645H66.2048C66.2902 13.3647 66.372 13.3985 66.4324 13.4585C66.4927 13.5186 66.5267 13.6 66.5269 13.685V15.2064C66.5267 15.2914 66.4927 15.3728 66.4324 15.4329C66.372 15.4929 66.2902 15.5268 66.2048 15.5269H61.9092V17.2246C61.9092 18.0571 62.1826 18.3138 62.9392 18.3138H66.3331C66.4185 18.314 66.5003 18.3478 66.5607 18.4079C66.6211 18.4679 66.6551 18.5494 66.6553 18.6343V20.1238C66.6553 20.3306 66.5583 20.427 66.3331 20.459Z" fill="#F71963"/> <path d="M78.4772 20.5228H75.9181C75.7089 20.5228 75.612 20.4563 75.4997 20.2828L73.2807 16.7778L71.2703 20.2056C71.1573 20.3978 71.0451 20.5262 70.8693 20.5262H68.4873C68.3262 20.5262 68.246 20.4297 68.246 20.318C68.2491 20.2788 68.26 20.2406 68.2781 20.2056L71.7649 14.4205L68.242 8.92722C68.2241 8.8979 68.2132 8.86494 68.2099 8.8308C68.2157 8.77196 68.2439 8.71757 68.2888 8.67884C68.3337 8.64011 68.3918 8.62001 68.4512 8.62267H71.0424C71.2195 8.62267 71.3485 8.78293 71.4434 8.92722L73.5026 12.1623L75.4957 8.92722C75.5759 8.78293 75.7209 8.62267 75.8967 8.62267H78.2787C78.3381 8.62001 78.3962 8.64011 78.4411 8.67884C78.486 8.71757 78.5142 8.77196 78.52 8.8308C78.5167 8.86494 78.5058 8.8979 78.4879 8.92722L74.9824 14.4544L78.6383 20.2056C78.6668 20.2545 78.6833 20.3094 78.6864 20.3659C78.6871 20.459 78.6062 20.5228 78.4772 20.5228Z" fill="#F71963"/> <path d="M45.138 8.65576C45.0805 8.65591 45.0249 8.67586 44.9805 8.71224C44.9362 8.74861 44.9058 8.79914 44.8947 8.85525L42.5581 17.4592C42.5261 17.6354 42.4779 17.6992 42.3329 17.6992C42.1879 17.6992 42.1397 17.6327 42.1077 17.4592L39.7684 8.85325C39.7573 8.79715 39.727 8.74661 39.6826 8.71024C39.6382 8.67387 39.5826 8.65391 39.5251 8.65376H37.2253C37.1879 8.6538 37.151 8.66224 37.1173 8.67844C37.0836 8.69463 37.0541 8.71818 37.0308 8.74733C37.0076 8.77647 36.9912 8.81046 36.983 8.84676C36.9748 8.88306 36.9749 8.92074 36.9834 8.95699C36.9834 8.95699 39.8372 18.8244 39.8687 18.9214C40.2496 20.0971 41.174 20.659 42.3503 20.659C43.4704 20.659 44.4483 20.0705 44.8306 18.9248C44.876 18.7918 47.6664 8.95632 47.6664 8.95632C47.6747 8.92012 47.6748 8.88251 47.6665 8.8463C47.6582 8.81008 47.6418 8.77618 47.6186 8.74712C47.5954 8.71806 47.5658 8.69457 47.5322 8.67841C47.4986 8.66225 47.4618 8.65382 47.4245 8.65376L45.138 8.65576Z" fill="#F71963"/> <path d="M30.9679 0H5.97127C4.03303 0 2.79189 2.05008 3.69885 3.75437L6.19918 8.46496H1.66638C1.37932 8.46505 1.09715 8.53889 0.847198 8.67933C0.597247 8.81977 0.387986 9.02206 0.239683 9.26659C0.0913811 9.51112 0.00906434 9.78961 0.000706766 10.0751C-0.00765081 10.3606 0.0582334 10.6434 0.191979 10.8961L8.23433 26.0406C8.37611 26.3069 8.58817 26.5298 8.84771 26.6852C9.10725 26.8407 9.40446 26.9228 9.7074 26.9228C10.0103 26.9228 10.3075 26.8407 10.5671 26.6852C10.8266 26.5298 11.0387 26.3069 11.1805 26.0406L13.3647 21.9497L16.1049 27.1112C17.0694 28.9265 19.682 28.9298 20.6498 27.1165L33.1788 3.65928C34.0644 2.0002 32.856 0 30.9679 0ZM19.7395 10.0223L14.3371 20.139C14.2427 20.3162 14.1016 20.4643 13.9289 20.5677C13.7562 20.6711 13.5585 20.7257 13.357 20.7257C13.1554 20.7257 12.9577 20.6711 12.7851 20.5677C12.6124 20.4643 12.4712 20.3162 12.3768 20.139L7.02661 10.0649C6.93719 9.8969 6.89287 9.7088 6.89796 9.5188C6.90304 9.32879 6.95736 9.14331 7.05564 8.98032C7.15392 8.81733 7.29284 8.68234 7.45894 8.58845C7.62505 8.49455 7.81271 8.44491 8.00375 8.44435H18.7864C18.9726 8.44436 19.1557 8.49232 19.3178 8.58357C19.48 8.67483 19.6156 8.80627 19.7115 8.96511C19.8075 9.12395 19.8605 9.3048 19.8654 9.49005C19.8703 9.6753 19.8269 9.85866 19.7395 10.0223Z" fill="#F71963"/> </svg>
+      <div class="meta">Arquitetura de referência<br />Axia Energia</div>
+    </div>
+
+    <h1 class="titulo">Arquitetura VTEX — <em>Axia Energia</em></h1>
     <p class="subtitulo">
-      Compra de créditos de carbono / RECs: CEPEL popula o carrinho, checkout com Banco do Brasil,
-      pedido no OMS, faturamento no SAP e certificado manual via Reckify.
+      Compra de créditos de carbono / RECs: a Axia calcula a necessidade com a CEPEL,
+      conclui o pedido na VTEX e sincroniza o faturamento com o SAP — com certificação manual via Reckify.
     </p>
     <p class="doc-ref">
-      Estilo baseado nas arquiteturas de referência VTEX ·
-      <a href="https://developers.vtex.com/docs/guides/understanding-vtex-reference-architectures" target="_blank" rel="noopener">documentação</a>
+      Brand VTEX ·
+      <a href="https://brand.vtex.com/" target="_blank" rel="noopener">brand.vtex.com</a>
+      · arquitetura conforme
+      <a href="https://developers.vtex.com/docs/guides/understanding-vtex-reference-architectures" target="_blank" rel="noopener">reference architectures</a>
     </p>
+    <div class="accent" aria-hidden="true"></div>
 
     <div class="legenda">
       <span><i class="sw nativo"></i> Nativo VTEX</span>
@@ -615,10 +396,10 @@
       <svg class="fluxo-svg" id="fluxo" aria-hidden="true">
         <defs>
           <marker id="m-sync" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
-            <path d="M0,0 L5,3 L0,6 Z" fill="#4A6FA5" />
+            <path d="M0,0 L5,3 L0,6 Z" fill="#134CD8" />
           </marker>
           <marker id="m-async" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
-            <path d="M0,0 L5,3 L0,6 Z" fill="#555555" />
+            <path d="M0,0 L5,3 L0,6 Z" fill="#142032" />
           </marker>
         </defs>
         <path id="p1" class="path-sync" marker-end="url(#m-sync)" />
