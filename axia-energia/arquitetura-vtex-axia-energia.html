@@ -164,12 +164,12 @@
     .diagrama {
       position: relative;
       display: grid;
-      grid-template-columns: 160px minmax(0, 1fr) 200px;
+      grid-template-columns: 150px minmax(0, 1fr) 48px 190px;
       grid-template-areas:
-        "canais core terceiro"
-        "integ  integ integ"
-        "back   back  back";
-      gap: 16px 18px;
+        "canais core corredor terceiro"
+        "integ  integ integ integ"
+        "back   back  back  back";
+      gap: 20px 14px;
       background-color: #fafbfc;
       background-image:
         linear-gradient(rgba(0,0,0,0.035) 1px, transparent 1px),
@@ -180,13 +180,21 @@
       padding: 26px 18px 18px;
     }
 
+    /* Corredor vazio só para as setas CEPEL/BB → módulos */
+    .corredor {
+      grid-area: corredor;
+      position: relative;
+      z-index: 1;
+      min-height: 1px;
+    }
+
     .fluxo-svg {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 8;
+      z-index: 4;
       overflow: visible;
     }
 
@@ -221,7 +229,7 @@
 
     .fluxo-svg text {
       font-family: "DM Sans", sans-serif;
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 700;
     }
 
@@ -229,12 +237,18 @@
     .lbl-async { fill: #333; }
     .lbl-manual { fill: var(--manual); }
 
-    /* Painéis */
+    .lbl-bg {
+      fill: #fafbfc;
+      stroke: #d8dee6;
+      stroke-width: 1;
+    }
+
+    /* Painéis acima das setas nas áreas de conteúdo */
     .painel {
       position: relative;
       border-radius: 12px;
       background: #fff;
-      z-index: 1;
+      z-index: 5;
     }
 
     .rotulo {
@@ -294,6 +308,14 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+    }
+
+    /* Faixa vazia entre módulos e promo — rota Checkout → OMS */
+    .faixa-fluxo-interno {
+      height: 28px;
+      margin: 10px 0 2px;
+      position: relative;
+      z-index: 1;
     }
 
     .pill {
@@ -461,13 +483,14 @@
       background: #eceff3;
       border-radius: 10px;
       text-align: center;
-      padding: 11px;
+      padding: 11px 11px 11px 220px;
       font-weight: 700;
       font-size: 0.82rem;
       letter-spacing: 0.05em;
       text-transform: uppercase;
       color: #4b5563;
       z-index: 2;
+      position: relative;
     }
 
     /* Back office */
@@ -596,7 +619,10 @@
           "back";
       }
 
+      .corredor { display: none; }
       .fluxo-svg { display: none; }
+      .faixa-fluxo-interno { display: none; }
+      .integ { padding-left: 11px; }
 
       .canais, .terceiro {
         flex-direction: row;
@@ -662,11 +688,11 @@
         <path id="p3" class="path-async" marker-end="url(#m-async)" />
         <path id="p4" class="path-async" marker-end="url(#m-async)" />
         <path id="p5" class="path-manual" marker-end="url(#m-manual)" />
-        <text id="t1" class="lbl-sync"></text>
-        <text id="t2" class="lbl-sync"></text>
-        <text id="t3" class="lbl-async"></text>
-        <text id="t4" class="lbl-async"></text>
-        <text id="t5" class="lbl-manual"></text>
+        <g id="g1"><rect class="lbl-bg" rx="4" ry="4" /><text class="lbl-sync"></text></g>
+        <g id="g2"><rect class="lbl-bg" rx="4" ry="4" /><text class="lbl-sync"></text></g>
+        <g id="g3"><rect class="lbl-bg" rx="4" ry="4" /><text class="lbl-async"></text></g>
+        <g id="g4"><rect class="lbl-bg" rx="4" ry="4" /><text class="lbl-async"></text></g>
+        <g id="g5"><rect class="lbl-bg" rx="4" ry="4" /><text class="lbl-manual"></text></g>
       </svg>
 
       <!-- Canais do lojista -->
@@ -700,6 +726,8 @@
           <span class="pill">Assinaturas</span>
         </div>
 
+        <div class="faixa-fluxo-interno" id="faixa-interna" aria-hidden="true"></div>
+
         <aside class="promo" id="promo">
           <span class="badge">Promoções</span>
           <div>
@@ -713,6 +741,9 @@
 
         <p class="nota-pgto">Pagamento via Pix ou Boleto · conector nativo Banco do Brasil no Hub de Pagamentos</p>
       </section>
+
+      <!-- Corredor para setas (entre Core e Terceiros) -->
+      <div class="corredor" id="corredor" aria-hidden="true"></div>
 
       <!-- Terceiros -->
       <aside class="painel terceiro" aria-label="Terceiros">
@@ -815,8 +846,29 @@
         l: r.left - c.left,
         r: r.left - c.left + r.width,
         t: r.top - c.top,
-        b: r.top - c.top + r.height
+        b: r.top - c.top + r.height,
+        w: r.width,
+        h: r.height
       };
+    }
+
+    function setLabel(groupId, cx, cy, text) {
+      const g = document.getElementById(groupId);
+      const rect = g.querySelector("rect");
+      const t = g.querySelector("text");
+      t.textContent = text;
+      t.setAttribute("x", cx);
+      t.setAttribute("y", cy);
+      t.setAttribute("text-anchor", "middle");
+      t.setAttribute("dominant-baseline", "middle");
+      // medir após setar texto
+      const bb = t.getBBox();
+      const padX = 6;
+      const padY = 3;
+      rect.setAttribute("x", bb.x - padX);
+      rect.setAttribute("y", bb.y - padY);
+      rect.setAttribute("width", bb.width + padX * 2);
+      rect.setAttribute("height", bb.height + padY * 2);
     }
 
     function desenhar() {
@@ -836,49 +888,68 @@
       const oms = box(document.getElementById("mod-oms"), root);
       const sap = box(document.getElementById("node-sap"), root);
       const reckify = box(document.getElementById("node-reckify"), root);
+      const corredor = box(document.getElementById("corredor"), root);
+      const faixa = box(document.getElementById("faixa-interna"), root);
+      const integ = box(document.getElementById("integ"), root);
 
-      // 1) CEPEL → Checkout (síncrono)
+      const laneX = corredor.x; // centro do corredor entre Core e Terceiros
+
+      // 1) CEPEL → Checkout: sai pela esquerda do CEPEL, desce/sobe no corredor, entra pela direita do Checkout
       document.getElementById("p1").setAttribute(
         "d",
-        `M ${cepel.l} ${cepel.y} C ${cepel.l - 48} ${cepel.y}, ${checkout.r + 55} ${checkout.y - 32}, ${checkout.r + 2} ${checkout.y}`
+        `M ${cepel.l} ${cepel.y}
+         L ${laneX} ${cepel.y}
+         L ${laneX} ${checkout.y}
+         L ${checkout.r + 2} ${checkout.y}`
       );
 
-      // 2) BB → Hub de Pagamentos (síncrono)
+      // 2) BB → Hub de Pagamentos: mesmo corredor, sem cruzar texto dos cards
       document.getElementById("p2").setAttribute(
         "d",
-        `M ${bb.l} ${bb.y} C ${bb.l - 40} ${bb.y}, ${pagamentos.r + 48} ${pagamentos.y + 26}, ${pagamentos.r + 2} ${pagamentos.y}`
+        `M ${bb.l} ${bb.y}
+         L ${laneX + 10} ${bb.y}
+         L ${laneX + 10} ${pagamentos.y}
+         L ${pagamentos.r + 2} ${pagamentos.y}`
       );
 
-      // 3) Checkout → OMS (assíncrono)
+      // 3) Checkout → OMS: pela faixa vazia abaixo dos módulos (não passa pelo texto das pills/promo)
+      const yInterno = faixa.y;
       document.getElementById("p3").setAttribute(
         "d",
-        `M ${checkout.r + 2} ${checkout.b} C ${checkout.r + 26} ${checkout.b + 34}, ${oms.l - 26} ${oms.b + 34}, ${oms.l - 2} ${oms.b}`
+        `M ${checkout.x} ${checkout.b + 2}
+         L ${checkout.x} ${yInterno}
+         L ${oms.x} ${yInterno}
+         L ${oms.x} ${oms.b + 2}`
       );
 
-      // 4) OMS → SAP via Camada de Integração (assíncrono)
+      // 4) OMS → SAP: desce à esquerda da camada de integração (padding-left reserva o texto)
+      const xDown = Math.min(oms.x, sap.x, integ.l + 90);
       document.getElementById("p4").setAttribute(
         "d",
-        `M ${oms.x} ${oms.b + 2} C ${oms.x} ${oms.b + 52}, ${sap.x} ${sap.t - 52}, ${sap.x} ${sap.t - 2}`
+        `M ${oms.x} ${oms.b + 2}
+         L ${oms.x} ${integ.t - 4}
+         L ${xDown} ${integ.t - 4}
+         L ${xDown} ${integ.b + 4}
+         L ${sap.x} ${integ.b + 4}
+         L ${sap.x} ${sap.t - 2}`
       );
 
-      // 5) SAP → Reckify (manual)
+      // 5) SAP → Reckify: linha no vão entre os cards
+      const yManual = sap.t - 14;
       document.getElementById("p5").setAttribute(
         "d",
-        `M ${sap.r + 2} ${sap.y} L ${reckify.l - 2} ${reckify.y}`
+        `M ${sap.r - 8} ${sap.t}
+         L ${sap.r - 8} ${yManual}
+         L ${reckify.l + 8} ${yManual}
+         L ${reckify.l + 8} ${reckify.t}`
       );
 
-      const label = (id, x, y, text) => {
-        const t = document.getElementById(id);
-        t.setAttribute("x", x);
-        t.setAttribute("y", y);
-        t.textContent = text;
-      };
-
-      label("t1", (cepel.l + checkout.r) / 2 - 48, Math.min(cepel.y, checkout.y) - 12, "popula carrinho");
-      label("t2", bb.l - 72, bb.t - 8, "Pix / Boleto");
-      label("t3", (checkout.r + oms.l) / 2 - 10, checkout.b + 48, "pedido");
-      label("t4", sap.x + 10, (oms.b + sap.t) / 2 + 4, "API aberta VTEX");
-      label("t5", (sap.r + reckify.l) / 2 - 18, sap.y - 10, "manual");
+      // Rótulos com fundo, ancorados nos corredores (fora de texto)
+      setLabel("g1", laneX - 2, (cepel.y + checkout.y) / 2, "popula carrinho");
+      setLabel("g2", laneX + 10, (bb.y + pagamentos.y) / 2, "Pix / Boleto");
+      setLabel("g3", (checkout.x + oms.x) / 2, yInterno, "pedido");
+      setLabel("g4", xDown + 52, integ.y, "API aberta VTEX");
+      setLabel("g5", (sap.r + reckify.l) / 2, yManual, "manual");
     }
 
     window.addEventListener("load", desenhar);
