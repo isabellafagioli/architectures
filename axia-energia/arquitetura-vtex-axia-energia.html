@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arquitetura VTEX — Axia Energia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /*
+      Convenção VTEX Reference Architectures
+      https://developers.vtex.com/docs/guides/understanding-vtex-reference-architectures
+
+      1. Rosa fundo + borda rosa  → nativo VTEX (infra VTEX)
+      2. Branco + borda rosa      → customização na infra VTEX
+      3. Branco + borda preta     → terceiros fora da VTEX
+      4. Cinza + borda preta      → back office (fora da VTEX)
+      5. Borda tracejada          → módulo opcional (ex.: Camada de Integração)
+
+      Setas: azul = síncrono | preta = assíncrono
+    */
+    :root {
+      --vtex: #e31c58;
+      --vtex-fill: #f9c5d5;
+      --vtex-soft: #fde8ef;
+      --ink: #111111;
+      --muted: #555;
+      --line: #c8c8c8;
+      --back-fill: #e8e8e8;
+      --sync: #2563eb;
+      --async: #111111;
+      --manual: #c2410c;
+      --hl-ring: #f5d547;
+      --bg: #f4f6f9;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse 70% 40% at 0% 0%, rgba(227,28,88,0.05), transparent 50%),
+        linear-gradient(180deg, #e8edf3 0%, var(--bg) 40%, #e4e9ef 100%);
+      min-height: 100vh;
+      padding: 28px 18px 44px;
+    }
+
+    .wrap { max-width: 1180px; margin: 0 auto; }
+
+    /* —— Cabeçalho —— */
+    .topo {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .topo h1 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .topo h1 span { color: var(--vtex); }
+
+    .topo .sub {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      max-width: 520px;
+      line-height: 1.4;
+    }
+
+    .doc-ref {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .doc-ref a { color: var(--vtex); }
+
+    /* —— Legenda oficial —— */
+    .legenda {
+      background: #fff;
+      border: 1px solid #dde2e8;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .legenda h2 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .legenda-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+    }
+
+    .leg-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      color: #333;
+    }
+
+    .sample {
+      width: 28px;
+      height: 16px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .sample.nativo { background: var(--vtex-fill); border: 2px solid var(--vtex); }
+    .sample.custom-vtex { background: #fff; border: 2px solid var(--vtex); }
+    .sample.terceiro { background: #fff; border: 2px solid var(--ink); }
+    .sample.backoffice { background: var(--back-fill); border: 2px solid var(--ink); }
+    .sample.opcional { background: #eee; border: 2px dashed #888; }
+
+    .seta-leg {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+    }
+
+    .seta-leg i {
+      display: inline-block;
+      width: 28px;
+      height: 0;
+      border-top: 2.5px solid;
+      position: relative;
+    }
+
+    .seta-leg i::after {
+      content: "";
+      position: absolute;
+      right: -1px;
+      top: -5px;
+      border: 5px solid transparent;
+    }
+
+    .seta-leg.sync i { border-color: var(--sync); }
+    .seta-leg.sync i::after { border-left-color: var(--sync); border-right: 0; }
+    .seta-leg.async i { border-color: var(--async); }
+    .seta-leg.async i::after { border-left-color: var(--async); border-right: 0; }
+    .seta-leg.manual i { border-color: var(--manual); border-top-style: dashed; }
+    .seta-leg.manual i::after { border-left-color: var(--manual); border-right: 0; }
+
+    /* —— Diagrama —— */
+    .diagrama {
+      position: relative;
+      display: grid;
+      grid-template-columns: 160px minmax(0, 1fr) 200px;
+      grid-template-areas:
+        "canais core terceiro"
+        "integ  integ integ"
+        "back   back  back";
+      gap: 16px 18px;
+      background-color: #fafbfc;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.035) 1px, transparent 1px);
+      background-size: 22px 22px;
+      border: 1px solid #e0e5eb;
+      border-radius: 14px;
+      padding: 26px 18px 18px;
+    }
+
+    .fluxo-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 8;
+      overflow: visible;
+    }
+
+    .fluxo-svg path {
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .path-sync {
+      stroke: var(--sync);
+      animation: dash-move 1.1s linear infinite;
+      stroke-dasharray: 6 4;
+    }
+
+    .path-async {
+      stroke: var(--async);
+      animation: dash-move 1.4s linear infinite;
+      stroke-dasharray: 8 5;
+    }
+
+    .path-manual {
+      stroke: var(--manual);
+      animation: dash-move 1.8s linear infinite;
+      stroke-dasharray: 2 6;
+    }
+
+    @keyframes dash-move {
+      to { stroke-dashoffset: -22; }
+    }
+
+    .fluxo-svg text {
+      font-family: "DM Sans", sans-serif;
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+
+    .lbl-sync { fill: var(--sync); }
+    .lbl-async { fill: #333; }
+    .lbl-manual { fill: var(--manual); }
+
+    /* Painéis */
+    .painel {
+      position: relative;
+      border-radius: 12px;
+      background: #fff;
+      z-index: 1;
+    }
+
+    .rotulo {
+      position: absolute;
+      top: -10px;
+      left: 12px;
+      background: #fafbfc;
+      padding: 0 8px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      white-space: nowrap;
+      z-index: 3;
+    }
+
+    /* Canais do lojista */
+    .canais {
+      grid-area: canais;
+      border: 2.5px solid var(--ink);
+      padding: 24px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .canais > .rotulo { color: var(--ink); }
+
+    .canal {
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      padding: 12px 8px;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: #fff;
+    }
+
+    .canal small {
+      display: block;
+      font-weight: 500;
+      color: var(--muted);
+      font-size: 0.62rem;
+      margin-top: 4px;
+    }
+
+    /* Serviços principais VTEX */
+    .core {
+      grid-area: core;
+      border: 3px solid var(--vtex);
+      padding: 24px 14px 14px;
+      min-height: 300px;
+    }
+
+    .core > .rotulo { color: var(--vtex); }
+
+    .modulos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 8px 13px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      position: relative;
+      z-index: 2;
+      /* nativo VTEX */
+      background: var(--vtex-fill);
+      border: 1.5px solid var(--vtex);
+      color: #9b1040;
+    }
+
+    .pill.destaque {
+      background: var(--vtex-fill);
+      border: 2px solid var(--vtex);
+      color: #7a0c32;
+      font-weight: 700;
+      box-shadow: 0 0 0 3px rgba(245, 213, 71, 0.55);
+    }
+
+    .pill.destaque::after {
+      content: "";
+      position: absolute;
+      inset: -5px;
+      border: 1.5px dashed #c9a400;
+      border-radius: inherit;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .promo {
+      margin-top: 14px;
+      border: 2px solid var(--vtex);
+      border-radius: 10px;
+      background: linear-gradient(125deg, var(--vtex-soft), #fff 60%);
+      padding: 11px 12px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      max-width: 540px;
+      position: relative;
+      z-index: 2;
+      animation: sobe 0.5s ease both;
+    }
+
+    @keyframes sobe {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .promo .badge {
+      background: var(--vtex);
+      color: #fff;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 4px 7px;
+      border-radius: 5px;
+      height: fit-content;
+    }
+
+    .promo strong {
+      display: block;
+      font-size: 0.82rem;
+      color: #a01242;
+      margin-bottom: 3px;
+    }
+
+    .promo p {
+      font-size: 0.76rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .nota-pgto {
+      margin-top: 10px;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    /* Terceiros */
+    .terceiro {
+      grid-area: terceiro;
+      border: 2.5px solid var(--ink);
+      padding: 24px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .terceiro > .rotulo { color: var(--ink); }
+
+    .card {
+      border: 1.5px solid var(--ink);
+      border-radius: 10px;
+      background: #fff;
+      padding: 12px 8px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      min-height: 96px;
+    }
+
+    .card .chip {
+      position: absolute;
+      top: -8px;
+      right: 6px;
+      font-size: 0.56rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #e8eefc;
+      color: var(--sync);
+    }
+
+    .card .chip.async-chip {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .card .chip.man-chip {
+      background: #ffedd5;
+      color: var(--manual);
+    }
+
+    .card img, .card .logo-svg {
+      max-height: 44px;
+      max-width: 130px;
+      object-fit: contain;
+    }
+
+    .card .papel {
+      font-size: 0.64rem;
+      color: var(--muted);
+      line-height: 1.3;
+      font-weight: 500;
+    }
+
+    /* Camada de integração (opcional — borda tracejada) */
+    .integ {
+      grid-area: integ;
+      border: 2px dashed #8b949e;
+      background: #eceff3;
+      border-radius: 10px;
+      text-align: center;
+      padding: 11px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #4b5563;
+      z-index: 2;
+    }
+
+    /* Back office */
+    .back {
+      grid-area: back;
+      border: 2.5px solid var(--ink);
+      background: #f3f3f3;
+      padding: 24px 14px 14px;
+    }
+
+    .back > .rotulo { color: var(--ink); background: #f3f3f3; }
+
+    .back-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 220px));
+      gap: 12px;
+    }
+
+    .back .card {
+      background: var(--back-fill);
+      border-color: var(--ink);
+    }
+
+    /* Faixa de fluxo */
+    .faixa {
+      margin-top: 20px;
+      background: #fff;
+      border: 1px solid #dde2e8;
+      border-radius: 12px;
+      padding: 14px 16px;
+      overflow-x: auto;
+    }
+
+    .faixa h2 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .passos {
+      display: flex;
+      align-items: stretch;
+      min-width: 780px;
+    }
+
+    .passo {
+      flex: 1;
+      background: #f7f9fc;
+      border: 1px solid #e4e8ee;
+      border-radius: 10px;
+      padding: 10px 8px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .passo.manual {
+      background: #fff8f1;
+      border-color: #f0d2b0;
+    }
+
+    .passo .n {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--sync);
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+    }
+
+    .passo.manual .n { background: var(--manual); }
+    .passo.async-step .n { background: var(--async); }
+
+    .passo .nome { font-size: 0.78rem; font-weight: 700; }
+    .passo .desc { font-size: 0.65rem; color: var(--muted); line-height: 1.35; max-width: 130px; }
+    .passo .tipo {
+      font-size: 0.58rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+    }
+
+    .passo .tipo.sync { color: var(--sync); }
+    .passo .tipo.async { color: #333; }
+    .passo .tipo.man { color: var(--manual); }
+
+    .seta {
+      flex: 0 0 32px;
+      display: grid;
+      place-items: center;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--sync);
+      animation: nudge 1.3s ease-in-out infinite;
+    }
+
+    .seta.async { color: var(--async); }
+    .seta.man { color: var(--manual); }
+
+    @keyframes nudge {
+      0%, 100% { transform: translateX(0); opacity: 0.65; }
+      50% { transform: translateX(3px); opacity: 1; }
+    }
+
+    .rodape {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 920px) {
+      .diagrama {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "canais"
+          "core"
+          "terceiro"
+          "integ"
+          "back";
+      }
+
+      .fluxo-svg { display: none; }
+
+      .canais, .terceiro {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      .canais .canal, .terceiro .card {
+        flex: 1 1 140px;
+      }
+
+      .back-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topo">
+      <div>
+        <h1>Arquitetura VTEX — <span>Axia Energia</span></h1>
+        <p class="sub">
+          Compra de créditos de carbono / RECs: da calculadora CEPEL ao certificado Reckify,
+          com checkout nativo e sincronização de faturamento no SAP.
+        </p>
+        <p class="doc-ref">
+          Baseado em
+          <a href="https://developers.vtex.com/docs/guides/understanding-vtex-reference-architectures" target="_blank" rel="noopener">
+            Understanding VTEX reference architectures
+          </a>
+        </p>
+      </div>
+    </header>
+
+    <!-- Legenda conforme documentação oficial -->
+    <section class="legenda" aria-label="Legenda">
+      <h2>Legenda — cores e conexões</h2>
+      <div class="legenda-grid">
+        <span class="leg-item"><i class="sample nativo"></i> Nativo VTEX (infra VTEX)</span>
+        <span class="leg-item"><i class="sample custom-vtex"></i> Customização na infra VTEX</span>
+        <span class="leg-item"><i class="sample terceiro"></i> Terceiros (fora da VTEX)</span>
+        <span class="leg-item"><i class="sample backoffice"></i> Back office (fora da VTEX)</span>
+        <span class="leg-item"><i class="sample opcional"></i> Módulo opcional</span>
+        <span class="seta-leg sync"><i></i> Síncrono</span>
+        <span class="seta-leg async"><i></i> Assíncrono</span>
+        <span class="seta-leg manual"><i></i> Manual</span>
+      </div>
+    </section>
+
+    <div class="diagrama" id="diagrama">
+      <svg class="fluxo-svg" id="fluxo" aria-hidden="true">
+        <defs>
+          <marker id="m-sync" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#2563eb" />
+          </marker>
+          <marker id="m-async" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#111111" />
+          </marker>
+          <marker id="m-manual" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#c2410c" />
+          </marker>
+        </defs>
+        <path id="p1" class="path-sync" marker-end="url(#m-sync)" />
+        <path id="p2" class="path-sync" marker-end="url(#m-sync)" />
+        <path id="p3" class="path-async" marker-end="url(#m-async)" />
+        <path id="p4" class="path-async" marker-end="url(#m-async)" />
+        <path id="p5" class="path-manual" marker-end="url(#m-manual)" />
+        <text id="t1" class="lbl-sync"></text>
+        <text id="t2" class="lbl-sync"></text>
+        <text id="t3" class="lbl-async"></text>
+        <text id="t4" class="lbl-async"></text>
+        <text id="t5" class="lbl-manual"></text>
+      </svg>
+
+      <!-- Canais do lojista -->
+      <aside class="painel canais" aria-label="Canais do lojista">
+        <div class="rotulo">Canais do lojista</div>
+        <div class="canal" id="node-loja">
+          Loja web
+          <small>Storefront VTEX</small>
+        </div>
+        <div class="canal">
+          Calculadora
+          <small>via CEPEL</small>
+        </div>
+      </aside>
+
+      <!-- Serviços principais VTEX -->
+      <section class="painel core" aria-label="Serviços principais VTEX">
+        <div class="rotulo">Serviços principais VTEX</div>
+        <div class="modulos">
+          <span class="pill destaque" id="mod-catalogo">Catálogo</span>
+          <span class="pill destaque" id="mod-checkout">Checkout</span>
+          <span class="pill destaque" id="mod-pagamentos">Hub de Pagamentos</span>
+          <span class="pill destaque" id="mod-oms">OMS</span>
+          <span class="pill destaque" id="mod-promocoes">Promoções</span>
+          <span class="pill">Clientes</span>
+          <span class="pill">Autenticação</span>
+          <span class="pill">Busca</span>
+          <span class="pill">CMS</span>
+          <span class="pill">Mensagens</span>
+          <span class="pill">Logística / Estoque</span>
+          <span class="pill">Assinaturas</span>
+        </div>
+
+        <aside class="promo" id="promo">
+          <span class="badge">Promoções</span>
+          <div>
+            <strong>Desconto no relatório de emissões</strong>
+            <p>
+              Desconto proporcional ao percentual de compensação realizada pelo cliente.
+              Se a compensação for <b>100%</b>, o relatório sai gratuito.
+            </p>
+          </div>
+        </aside>
+
+        <p class="nota-pgto">Pagamento via Pix ou Boleto · conector nativo Banco do Brasil no Hub de Pagamentos</p>
+      </section>
+
+      <!-- Terceiros -->
+      <aside class="painel terceiro" aria-label="Terceiros">
+        <div class="rotulo">Terceiros — exemplos</div>
+
+        <div class="card" id="node-cepel">
+          <span class="chip">entrada · síncrono</span>
+          <img src="assets/cepel.svg" alt="CEPEL" width="118" height="46" />
+          <span class="papel">Calculadora de créditos<br />de carbono / RECs</span>
+        </div>
+
+        <div class="card" id="node-bb">
+          <span class="chip">pagamento · síncrono</span>
+          <img src="assets/bb.svg" alt="Banco do Brasil" width="48" height="48" />
+          <span class="papel">Pix / Boleto<br />conector nativo VTEX</span>
+        </div>
+      </aside>
+
+      <!-- Camada de integração -->
+      <div class="integ" id="integ">Camada de Integração <span style="font-weight:500;text-transform:none;letter-spacing:0;font-size:0.72rem">(opcional)</span></div>
+
+      <!-- Back office -->
+      <section class="painel back" aria-label="Back office do lojista">
+        <div class="rotulo">Back office do lojista</div>
+        <div class="back-row">
+          <div class="card" id="node-sap">
+            <span class="chip async-chip">ERP · assíncrono</span>
+            <img src="assets/sap.svg" alt="SAP" width="88" height="42" />
+            <span class="papel">Sync de faturamento<br />via API aberta VTEX</span>
+          </div>
+
+          <div class="card" id="node-reckify">
+            <span class="chip man-chip">pós-venda · manual</span>
+            <img src="assets/reckify.svg" alt="Reckify" width="128" height="36" />
+            <span class="papel">Emissão do certificado<br />(não automatizada)</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Fluxo principal numerado -->
+    <section class="faixa" aria-label="Fluxo principal">
+      <h2>Fluxo principal</h2>
+      <div class="passos">
+        <div class="passo">
+          <span class="n">1</span>
+          <span class="nome">CEPEL</span>
+          <span class="desc">Calcula créditos / RECs e popula o carrinho na VTEX</span>
+          <span class="tipo sync">síncrono</span>
+        </div>
+        <div class="seta" aria-hidden="true">→</div>
+        <div class="passo">
+          <span class="n">2</span>
+          <span class="nome">Checkout</span>
+          <span class="desc">Pix ou Boleto via Banco do Brasil (Hub de Pagamentos)</span>
+          <span class="tipo sync">síncrono</span>
+        </div>
+        <div class="seta async" aria-hidden="true">→</div>
+        <div class="passo async-step">
+          <span class="n">3</span>
+          <span class="nome">OMS</span>
+          <span class="desc">Pedido desce para a Gestão de Pedidos</span>
+          <span class="tipo async">assíncrono</span>
+        </div>
+        <div class="seta async" aria-hidden="true">→</div>
+        <div class="passo async-step">
+          <span class="n">4</span>
+          <span class="nome">SAP</span>
+          <span class="desc">Faturamento sincronizado via API aberta VTEX</span>
+          <span class="tipo async">assíncrono</span>
+        </div>
+        <div class="seta man" aria-hidden="true">⇢</div>
+        <div class="passo manual">
+          <span class="n">5</span>
+          <span class="nome">Reckify</span>
+          <span class="desc">Certificado emitido manualmente (pós-venda)</span>
+          <span class="tipo man">manual</span>
+        </div>
+      </div>
+    </section>
+
+    <p class="rodape">
+      Axia Energia · Módulos do fluxo: Catálogo · Checkout · Hub de Pagamentos · OMS · Promoções
+      · Integrações: CEPEL · Banco do Brasil · SAP · Reckify
+    </p>
+  </div>
+
+  <script>
+    function box(el, root) {
+      const r = el.getBoundingClientRect();
+      const c = root.getBoundingClientRect();
+      return {
+        x: r.left - c.left + r.width / 2,
+        y: r.top - c.top + r.height / 2,
+        l: r.left - c.left,
+        r: r.left - c.left + r.width,
+        t: r.top - c.top,
+        b: r.top - c.top + r.height
+      };
+    }
+
+    function desenhar() {
+      if (window.matchMedia("(max-width: 920px)").matches) return;
+
+      const root = document.getElementById("diagrama");
+      const svg = document.getElementById("fluxo");
+      const cr = root.getBoundingClientRect();
+      svg.setAttribute("viewBox", `0 0 ${cr.width} ${cr.height}`);
+      svg.setAttribute("width", cr.width);
+      svg.setAttribute("height", cr.height);
+
+      const cepel = box(document.getElementById("node-cepel"), root);
+      const bb = box(document.getElementById("node-bb"), root);
+      const checkout = box(document.getElementById("mod-checkout"), root);
+      const pagamentos = box(document.getElementById("mod-pagamentos"), root);
+      const oms = box(document.getElementById("mod-oms"), root);
+      const sap = box(document.getElementById("node-sap"), root);
+      const reckify = box(document.getElementById("node-reckify"), root);
+
+      // 1) CEPEL → Checkout (síncrono)
+      document.getElementById("p1").setAttribute(
+        "d",
+        `M ${cepel.l} ${cepel.y} C ${cepel.l - 48} ${cepel.y}, ${checkout.r + 55} ${checkout.y - 32}, ${checkout.r + 2} ${checkout.y}`
+      );
+
+      // 2) BB → Hub de Pagamentos (síncrono)
+      document.getElementById("p2").setAttribute(
+        "d",
+        `M ${bb.l} ${bb.y} C ${bb.l - 40} ${bb.y}, ${pagamentos.r + 48} ${pagamentos.y + 26}, ${pagamentos.r + 2} ${pagamentos.y}`
+      );
+
+      // 3) Checkout → OMS (assíncrono)
+      document.getElementById("p3").setAttribute(
+        "d",
+        `M ${checkout.r + 2} ${checkout.b} C ${checkout.r + 26} ${checkout.b + 34}, ${oms.l - 26} ${oms.b + 34}, ${oms.l - 2} ${oms.b}`
+      );
+
+      // 4) OMS → SAP via Camada de Integração (assíncrono)
+      document.getElementById("p4").setAttribute(
+        "d",
+        `M ${oms.x} ${oms.b + 2} C ${oms.x} ${oms.b + 52}, ${sap.x} ${sap.t - 52}, ${sap.x} ${sap.t - 2}`
+      );
+
+      // 5) SAP → Reckify (manual)
+      document.getElementById("p5").setAttribute(
+        "d",
+        `M ${sap.r + 2} ${sap.y} L ${reckify.l - 2} ${reckify.y}`
+      );
+
+      const label = (id, x, y, text) => {
+        const t = document.getElementById(id);
+        t.setAttribute("x", x);
+        t.setAttribute("y", y);
+        t.textContent = text;
+      };
+
+      label("t1", (cepel.l + checkout.r) / 2 - 48, Math.min(cepel.y, checkout.y) - 12, "popula carrinho");
+      label("t2", bb.l - 72, bb.t - 8, "Pix / Boleto");
+      label("t3", (checkout.r + oms.l) / 2 - 10, checkout.b + 48, "pedido");
+      label("t4", sap.x + 10, (oms.b + sap.t) / 2 + 4, "API aberta VTEX");
+      label("t5", (sap.r + reckify.l) / 2 - 18, sap.y - 10, "manual");
+    }
+
+    window.addEventListener("load", desenhar);
+    window.addEventListener("resize", () => {
+      clearTimeout(window.__t);
+      window.__t = setTimeout(desenhar, 100);
+    });
+  </script>
+</body>
+</html>
