@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GoMaddil &amp; GoBizzy — VTEX Architecture</title>
+<style>
+  :root {
+    --vtex: #F71963;
+    --vtex-deep: #DD1659;
+    --box-fill: #FFD9E7;
+    --ink: #142032;
+    --muted: #5B6E84;
+    --line: #E7E9EE;
+    --paper: #F5F9FF;
+    --back-fill: #E7E9EE;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'VTEX Trust', system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    padding: 30px 10px 50px;
+  }
+  .topo { display: flex; align-items: center; gap: 12px; margin: 0 auto 6px; width: 1200px; }
+  .topo h1 { font-size: 20px; font-weight: 500; }
+  .topo-sub { width: 1200px; margin: 0 auto 30px; font-size: 13px; color: var(--muted); }
+
+  .stage {
+    position: relative;
+    width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+
+  .box-abs { position: absolute; }
+
+  .panel-heading { position: absolute; font-size: 15px; font-weight: 700; color: var(--ink); }
+  .panel-heading.pink { color: var(--vtex-deep); }
+
+  .panel { border: 2px solid var(--ink); border-radius: 18px; background: #fff; }
+  .panel.core { border-color: var(--vtex); border-width: 2.5px; }
+  .panel.back { background: var(--back-fill); }
+
+  .cdn-bar {
+    background: var(--box-fill); border: 1.5px solid var(--vtex);
+    border-radius: 6px; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: var(--ink);
+  }
+
+  .pill.channel { background: #fff; border: 1.5px solid var(--ink); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 700; color: var(--ink); }
+  .pill.channel.pink { background: var(--box-fill); border: 1.5px solid var(--vtex); color: var(--ink); }
+
+  .pill {
+    background: var(--box-fill); border: 1.5px solid var(--vtex);
+    border-radius: 8px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; font-size: 12px; font-weight: 700; color: var(--ink); padding: 4px;
+  }
+  .pill small { font-weight: 400; font-size: 10px; margin-top: 2px; color: var(--muted); }
+
+  .box-node {
+    border-radius: 10px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; font-weight: 700; font-size: 13px; color: var(--ink); padding: 6px;
+  }
+  .box-node.terceiro { background: #fff; border: 1.5px solid var(--ink); font-size: 11.5px; }
+  .box-node.backoffice { background: #fff; border: 1.5px solid var(--ink); }
+  .box-node.optional-bo { background: #fff; border: 1.5px dashed var(--muted); color: var(--muted); font-weight: 400; font-size: 12px; }
+  .box-node.dealer { background: #fff; border: 1.5px solid var(--ink); }
+
+  .org-box { border: 1.5px dashed var(--muted); border-radius: 10px; background: #fff; }
+  .org-heading { position: absolute; left: 12px; top: 8px; max-width: 300px; }
+  .org-heading .t1 { font-size: 12px; font-weight: 700; color: var(--vtex-deep); display: block; }
+  .org-heading .t2 { font-size: 10.5px; font-weight: 700; color: var(--ink); display: block; margin-top: 1px; }
+  .org-badge {
+    position: absolute; right: 12px; top: 10px;
+    background: var(--box-fill); border: 1px solid var(--vtex);
+    color: var(--vtex-deep); font-size: 10.5px; font-weight: 700;
+    border-radius: 12px; padding: 3px 10px;
+  }
+
+  .tp-box { border: 1.5px dashed var(--vtex-deep); border-radius: 10px; background: #fff; }
+  .tp-heading { position: absolute; left: 10px; top: 8px; font-size: 11.5px; font-weight: 700; color: var(--vtex-deep); }
+
+  .vtexio-box { border: 1.5px solid var(--vtex); border-radius: 10px; background: #fff; }
+  .vtexio-heading { position: absolute; left: 10px; top: 8px; text-align: center; width: calc(100% - 20px); }
+  .vtexio-heading .t1 { font-size: 11.5px; font-weight: 700; color: var(--vtex-deep); display: block; }
+  .vtexio-heading .t2 { font-size: 10px; font-weight: 700; color: var(--vtex-deep); display: block; }
+
+  .integ-bar {
+    border: 2px dashed var(--muted); background: var(--line); border-radius: 10px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: var(--muted); text-align: center;
+  }
+  .integ-bar small { font-weight: 400; font-size: 11px; margin-top: 2px; }
+
+  .note { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .note b { color: var(--ink); }
+
+  svg.overlay { position: absolute; top: 0; left: 0; pointer-events: none; }
+  .lbl-bg { fill: #fff; opacity: 0.92; }
+  .lbl-txt { font-size: 11.5px; font-weight: 700; }
+  .lbl-txt.manual { fill: var(--muted); }
+  .lbl-txt.sync { fill: var(--vtex-deep); }
+
+  .legenda { width: 1200px; margin: 16px auto 0; display: flex; gap: 22px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+  .leg-item { display: flex; align-items: center; gap: 6px; }
+  .sw { width: 15px; height: 15px; border-radius: 4px; }
+  .sw.native { background: var(--box-fill); border: 1.5px solid var(--vtex); }
+  .sw.tp     { background: #fff; border: 1.5px solid var(--ink); }
+  .sw.opt    { background: #fff; border: 1.5px dashed var(--muted); }
+  .ln { display: inline-block; width: 22px; height: 0; border-top: 2px solid; }
+  .ln.sync   { border-color: var(--vtex); }
+  .ln.manual { border-color: var(--muted); border-top-style: dashed; }
+
+  .dealer-wrap { width: 1200px; margin: 46px auto 0; }
+  .dealer-heading { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 12px; }
+  .dealer-stage {
+    position: relative; width: 1200px; height: 200px;
+    border: 2px solid var(--ink); border-radius: 18px; background: #fff;
+  }
+  .template-box {
+    background: var(--line); border: 1.5px dashed var(--ink); border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; font-size: 12px; font-weight: 700; color: var(--ink); padding: 4px;
+  }
+  .template-box small { font-weight: 400; font-size: 10px; margin-top: 2px; color: var(--muted); display: block; }
+</style>
+</head>
+<body>
+
+<div class="topo">
+  <svg width="86" height="31" viewBox="0 0 80 29" xmlns="http://www.w3.org/2000/svg" fill="#F71963">
+    <path d="M57.555 10.8821H54.8207V20.2055C54.8205 20.2904 54.7865 20.3719 54.7262 20.4319C54.6658 20.492 54.5839 20.5258 54.4986 20.526H52.3899C52.3045 20.5258 52.2227 20.492 52.1623 20.4319C52.1019 20.3719 52.0679 20.2904 52.0677 20.2055V10.8821H49.3174C49.276 10.8838 49.2347 10.8771 49.1959 10.8626C49.1571 10.8481 49.1216 10.826 49.0916 10.7976C49.0615 10.7692 49.0375 10.7351 49.021 10.6973C49.0044 10.6595 48.9957 10.6187 48.9953 10.5775V8.9284C48.9957 8.88716 49.0044 8.84643 49.021 8.80862C49.0375 8.7708 49.0615 8.73668 49.0916 8.70827C49.1216 8.67987 49.1571 8.65776 49.1959 8.64325C49.2347 8.62875 49.276 8.62215 49.3174 8.62384H57.5543C57.6397 8.61986 57.7232 8.64966 57.7865 8.70672C57.8499 8.76378 57.888 8.84348 57.8925 8.9284V10.5782C57.8878 10.6628 57.8497 10.7423 57.7865 10.7992C57.7233 10.8561 57.6401 10.8859 57.555 10.8821Z"/>
+    <path d="M66.3331 20.459C65.7697 20.5388 64.8219 20.6671 63.0835 20.6671C61.0069 20.6671 59.1723 20.1384 59.1723 17.2239V11.9042C59.1723 8.98969 61.0237 8.47701 63.0996 8.47701C64.8373 8.47701 65.7697 8.60534 66.3331 8.68514C66.5583 8.71706 66.6553 8.79752 66.6553 9.00565V10.4972C66.6551 10.5821 66.6211 10.6635 66.5607 10.7236C66.5003 10.7837 66.4185 10.8175 66.3331 10.8177H62.9392C62.1826 10.8177 61.9092 11.0737 61.9092 11.9069V13.3645H66.2048C66.2902 13.3647 66.372 13.3985 66.4324 13.4585C66.4927 13.5186 66.5267 13.6 66.5269 13.685V15.2064C66.5267 15.2914 66.4927 15.3728 66.4324 15.4329C66.372 15.4929 66.2902 15.5268 66.2048 15.5269H61.9092V17.2246C61.9092 18.0571 62.1826 18.3138 62.9392 18.3138H66.3331C66.4185 18.314 66.5003 18.3478 66.5607 18.4079C66.6211 18.4679 66.6551 18.5494 66.6553 18.6343V20.1238C66.6553 20.3306 66.5583 20.427 66.3331 20.459Z"/>
+    <path d="M78.4772 20.5228H75.9181C75.7089 20.5228 75.612 20.4563 75.4997 20.2828L73.2807 16.7778L71.2703 20.2056C71.1573 20.3978 71.0451 20.5262 70.8693 20.5262H68.4873C68.3262 20.5262 68.246 20.4297 68.246 20.318C68.2491 20.2788 68.26 20.2406 68.2781 20.2056L71.7649 14.4205L68.242 8.92722C68.2241 8.8979 68.2132 8.86494 68.2099 8.8308C68.2157 8.77196 68.2439 8.71757 68.2888 8.67884C68.3337 8.64011 68.3918 8.62001 68.4512 8.62267H71.0424C71.2195 8.62267 71.3485 8.78293 71.4434 8.92722L73.5026 12.1623L75.4957 8.92722C75.5759 8.78293 75.7209 8.62267 75.8967 8.62267H78.2787C78.3381 8.62001 78.3962 8.64011 78.4411 8.67884C78.486 8.71757 78.5142 8.77196 78.52 8.8308C78.5167 8.86494 78.5058 8.8979 78.4879 8.92722L74.9824 14.4544L78.6383 20.2056C78.6668 20.2545 78.6833 20.3094 78.6864 20.3659C78.6871 20.459 78.6062 20.5228 78.4772 20.5228Z"/>
+    <path d="M45.138 8.65576C45.0805 8.65591 45.0249 8.67586 44.9805 8.71224C44.9362 8.74861 44.9058 8.79914 44.8947 8.85525L42.5581 17.4592C42.5261 17.6354 42.4779 17.6992 42.3329 17.6992C42.1879 17.6992 42.1397 17.6327 42.1077 17.4592L39.7684 8.85325C39.7573 8.79715 39.727 8.74661 39.6826 8.71024C39.6382 8.67387 39.5826 8.65391 39.5251 8.65376H37.2253C37.1879 8.6538 37.151 8.66224 37.1173 8.67844C37.0836 8.69463 37.0541 8.71818 37.0308 8.74733C37.0076 8.77647 36.9912 8.81046 36.983 8.84676C36.9748 8.88306 36.9749 8.92074 36.9834 8.95699C36.9834 8.95699 39.8372 18.8244 39.8687 18.9214C40.2496 20.0971 41.174 20.659 42.3503 20.659C43.4704 20.659 44.4483 20.0705 44.8306 18.9248C44.876 18.7918 47.6664 8.95632 47.6664 8.95632C47.6747 8.92012 47.6748 8.88251 47.6665 8.8463C47.6582 8.81008 47.6418 8.77618 47.6186 8.74712C47.5954 8.71806 47.5658 8.69457 47.5322 8.67841C47.4986 8.66225 47.4618 8.65382 47.4245 8.65376L45.138 8.65576Z"/>
+    <path d="M30.9679 0H5.97127C4.03303 0 2.79189 2.05008 3.69885 3.75437L6.19918 8.46496H1.66638C1.37932 8.46505 1.09715 8.53889 0.847198 8.67933C0.597247 8.81977 0.387986 9.02206 0.239683 9.26659C0.0913811 9.51112 0.00906434 9.78961 0.000706766 10.0751C-0.00765081 10.3606 0.0582334 10.6434 0.191979 10.8961L8.23433 26.0406C8.37611 26.3069 8.58817 26.5298 8.84771 26.6852C9.10725 26.8407 9.40446 26.9228 9.7074 26.9228C10.0103 26.9228 10.3075 26.8407 10.5671 26.6852C10.8266 26.5298 11.0387 26.3069 11.1805 26.0406L13.3647 21.9497L16.1049 27.1112C17.0694 28.9265 19.682 28.9298 20.6498 27.1165L33.1788 3.65928C34.0644 2.0002 32.856 0 30.9679 0ZM19.7395 10.0223L14.3371 20.139C14.2427 20.3162 14.1016 20.4643 13.9289 20.5677C13.7562 20.6711 13.5585 20.7257 13.357 20.7257C13.1554 20.7257 12.9577 20.6711 12.7851 20.5677C12.6124 20.4643 12.4712 20.3162 12.3768 20.139L7.02661 10.0649C6.93719 9.8969 6.89287 9.7088 6.89796 9.5188C6.90304 9.32879 6.95736 9.14331 7.05564 8.98032C7.15392 8.81733 7.29284 8.68234 7.45894 8.58845C7.62505 8.49455 7.81271 8.44491 8.00375 8.44435H18.7864C18.9726 8.44436 19.1557 8.49232 19.3178 8.58357C19.48 8.67483 19.6156 8.80627 19.7115 8.96511C19.8075 9.12395 19.8605 9.3048 19.8654 9.49005C19.8703 9.6753 19.8269 9.85866 19.7395 10.0223Z"/>
+  </svg>
+  <h1>GoMaddil &amp; GoBizzy — solution architecture</h1>
+</div>
+<div class="topo-sub">Two fully separate VTEX accounts, each replicating the full reference-architecture structure — no shared trade policy, no shared channels. The Merchant Back Office (ERP) may or may not be shared between the two — not yet confirmed. The dealer network is separate from both.</div>
+
+<style>
+  .board-title { width: 1200px; margin: 40px auto 4px; font-size: 18px; font-weight: 700; color: var(--ink); }
+  .board-sub { width: 1200px; margin: 0 auto 18px; font-size: 12.5px; color: var(--muted); }
+</style>
+
+<!-- ============================= BOARD 1: GOBIZZY ============================= -->
+<div class="board-title">GoBizzy — solution architecture <span style="color:var(--vtex-deep);">· separate VTEX account</span></div>
+<div class="board-sub">B2C storefront (.com) — simple, out-of-the-box, infinite inventory, no B2B entities.</div>
+
+<div class="stage" id="stage-gobizzy" style="height:800px;">
+
+  <div class="panel-heading box-abs" style="left:40px; top:80px;">Merchant Channels</div>
+  <div class="panel core box-abs" style="left:40px; top:110px; width:1120px; height:100px;">
+    <div class="cdn-bar box-abs" style="left:16px; top:14px; width:1088px; height:20px;">CDN</div>
+    <div class="pill channel pink box-abs" style="left:16px;  top:44px; width:150px; height:36px;">Web Store</div>
+    <div class="pill channel pink box-abs" style="left:182px; top:44px; width:150px; height:36px;">CX Platform</div>
+  </div>
+
+  <div class="panel-heading pink box-abs" style="left:40px; top:260px;">VTEX Core Services — single account</div>
+  <div class="panel core box-abs" style="left:40px; top:290px; width:650px; height:300px;">
+    <div class="pill box-abs" style="left:16px;  top:20px;  width:140px; height:56px;">Catalog<br><small>via Utilize (PIM)</small></div>
+    <div class="pill box-abs" style="left:164px; top:20px;  width:140px; height:56px;">Checkout</div>
+    <div class="pill box-abs" style="left:312px; top:20px;  width:140px; height:56px;">OMS<br><small>infinite inventory</small></div>
+
+    <div class="pill box-abs" style="left:16px;  top:84px;  width:140px; height:56px;">Subscriptions</div>
+    <div class="pill box-abs" style="left:164px; top:84px;  width:140px; height:56px;">Promotions</div>
+    <div class="pill box-abs" style="left:312px; top:84px;  width:140px; height:56px;">CMS</div>
+
+    <div class="pill box-abs" style="left:16px;  top:148px; width:140px; height:56px;">Customers</div>
+    <div class="pill box-abs" style="left:164px; top:148px; width:140px; height:56px;">Message</div>
+    <div class="pill box-abs" style="left:312px; top:148px; width:140px; height:56px;">Authentication</div>
+
+    <div class="pill box-abs" style="left:16px;  top:212px; width:140px; height:56px;">Search</div>
+    <div class="pill box-abs" style="left:164px; top:212px; width:140px; height:56px;">Payment Hub</div>
+    <div class="pill box-abs" style="left:312px; top:212px; width:140px; height:56px;">Pricing Hub</div>
+
+    <div class="vtexio-box box-abs" style="left:468px; top:20px; width:150px; height:248px;">
+      <div class="vtexio-heading">
+        <span class="t1">VTEX IO</span>
+        <span class="t2">Apps PaaS</span>
+      </div>
+      <div class="pill box-abs" style="left:10px; top:40px;  width:130px; height:52px;">Custom Admin</div>
+      <div class="pill box-abs" style="left:10px; top:100px; width:130px; height:52px;">Order Status App<br><small>reads updates sheet</small></div>
+      <div class="pill box-abs" style="left:10px; top:170px; width:130px; height:52px;">Custom Backend service (API)</div>
+    </div>
+  </div>
+
+  <div class="panel-heading box-abs" style="left:720px; top:260px;">3rd Party Optional</div>
+  <div class="panel box-abs" style="left:720px; top:290px; width:440px; height:300px;">
+    <div class="box-node optional-bo box-abs" style="left:20px; top:150px; width:400px; height:52px;">Grand &amp; Toy — external seller<br><small>optional</small></div>
+    <div class="note box-abs" style="left:20px; top:222px; width:400px;">Not yet scoped — would replace the manual flow below with automatic sourcing/fulfillment. GoBizzy sells the Grand &amp; Toy catalog directly (not confirmed to also depend on SP Richards, unlike GoMaddil).</div>
+  </div>
+
+  <div class="panel-heading box-abs" style="left:40px; top:630px;">Merchant Back Office</div>
+  <div class="panel back box-abs" style="left:40px; top:660px; width:1120px; height:110px;">
+    <div class="box-node backoffice box-abs" style="left:200px; top:25px; width:260px; height:60px;">ERP</div>
+    <div class="box-node optional-bo box-abs" style="left:660px; top:25px; width:260px; height:60px;">Manual input<br><small>spreadsheet upload</small></div>
+  </div>
+
+  <svg class="overlay" width="1200" height="830">
+    <defs>
+      <marker id="ah-manual-1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6 Z" fill="var(--muted)"/>
+      </marker>
+    </defs>
+    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 373 591 L 373 688" marker-end="url(#ah-manual-1)"/>
+    <rect class="lbl-bg" x="329" y="632" width="88" height="18" rx="4"/>
+    <text class="lbl-txt manual" x="373" y="641" text-anchor="middle" dominant-baseline="central">Orders</text>
+
+    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 833 688 L 833 591" marker-end="url(#ah-manual-1)"/>
+    <rect class="lbl-bg" x="743" y="632" width="180" height="18" rx="4"/>
+    <text class="lbl-txt manual" x="833" y="641" text-anchor="middle" dominant-baseline="central">Catalog · Customers · Prices</text>
+  </svg>
+</div>
+
+<!-- ============================= BOARD 2: GOMADDIL ============================= -->
+<div class="board-title">GoMaddil — solution architecture <span style="color:var(--vtex-deep);">· separate VTEX account</span></div>
+<div class="board-sub">B2B wholesale/dealer portal — account-specific pricing &amp; catalog; infinite inventory; manual export/entry. <b>No B2B hierarchy needed</b> (confirmed Jul 27 call — no Organizations/Cost Centers/Users tree).</div>
+
+<div class="stage" id="stage-gomaddil" style="height:800px;">
+
+  <div class="panel-heading box-abs" style="left:40px; top:80px;">Merchant Channels</div>
+  <div class="panel core box-abs" style="left:40px; top:110px; width:1120px; height:100px;">
+    <div class="cdn-bar box-abs" style="left:16px; top:14px; width:1088px; height:20px;">CDN</div>
+    <div class="pill channel pink box-abs" style="left:16px;  top:44px; width:150px; height:36px;">Web Store</div>
+  </div>
+
+  <div class="panel-heading pink box-abs" style="left:40px; top:260px;">VTEX Core Services — single account</div>
+  <div class="panel core box-abs" style="left:40px; top:290px; width:650px; height:300px;">
+
+    <div class="pill box-abs" style="left:16px;  top:20px;  width:140px; height:56px;">Catalog<br><small>via Utilize (PIM)</small></div>
+    <div class="pill box-abs" style="left:164px; top:20px;  width:140px; height:56px;">Checkout</div>
+    <div class="pill box-abs" style="left:312px; top:20px;  width:140px; height:56px;">OMS<br><small>infinite inventory</small></div>
+
+    <div class="pill box-abs" style="left:16px;  top:84px; width:140px; height:56px;">Subscriptions</div>
+    <div class="pill box-abs" style="left:164px; top:84px; width:140px; height:56px;">Promotions</div>
+    <div class="pill box-abs" style="left:312px; top:84px; width:140px; height:56px;">CMS</div>
+
+    <div class="pill box-abs" style="left:16px;  top:148px; width:140px; height:56px;">Customers</div>
+    <div class="pill box-abs" style="left:164px; top:148px; width:140px; height:56px;">Message</div>
+    <div class="pill box-abs" style="left:312px; top:148px; width:140px; height:56px;">Authentication</div>
+
+    <div class="pill box-abs" style="left:16px;  top:212px; width:140px; height:56px;">Search</div>
+    <div class="pill box-abs" style="left:164px; top:212px; width:140px; height:56px;">Payment Hub</div>
+    <div class="pill box-abs" style="left:312px; top:212px; width:140px; height:56px;">Pricing Hub<br><small>account-specific pricing</small></div>
+
+    <div class="vtexio-box box-abs" style="left:468px; top:20px; width:150px; height:248px;">
+      <div class="vtexio-heading">
+        <span class="t1">VTEX IO</span>
+        <span class="t2">Apps PaaS</span>
+      </div>
+      <div class="pill box-abs" style="left:10px; top:40px;  width:130px; height:52px;">Custom Admin</div>
+      <div class="pill box-abs" style="left:10px; top:100px; width:130px; height:52px;">Order Status App<br><small>reads updates sheet</small></div>
+      <div class="pill box-abs" style="left:10px; top:170px; width:130px; height:52px;">Custom Backend service (API)</div>
+    </div>
+  </div>
+
+  <div class="panel-heading box-abs" style="left:720px; top:260px;">3rd Party Optional</div>
+  <div class="panel box-abs" style="left:720px; top:290px; width:440px; height:300px;">
+    <div class="box-node optional-bo box-abs" style="left:20px; top:110px; width:400px; height:52px;">Grand &amp; Toy — external seller<br><small>optional</small></div>
+    <div class="box-node optional-bo box-abs" style="left:20px; top:176px; width:400px; height:52px;">SP Richards — external seller<br><small>optional</small></div>
+    <div class="note box-abs" style="left:20px; top:238px; width:400px;">Not yet scoped — would replace the manual flow below with automatic sourcing/fulfillment.</div>
+  </div>
+
+  <div class="panel-heading box-abs" style="left:40px; top:630px;">Merchant Back Office</div>
+  <div class="panel back box-abs" style="left:40px; top:660px; width:1120px; height:110px;">
+    <div class="box-node backoffice box-abs" style="left:200px; top:25px; width:260px; height:60px;">ERP</div>
+    <div class="box-node optional-bo box-abs" style="left:660px; top:25px; width:260px; height:60px;">Manual input<br><small>spreadsheet upload</small></div>
+  </div>
+
+  <svg class="overlay" width="1200" height="800">
+    <defs>
+      <marker id="ah-manual-2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6 Z" fill="var(--muted)"/>
+      </marker>
+    </defs>
+    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 373 591 L 373 688" marker-end="url(#ah-manual-2)"/>
+    <rect class="lbl-bg" x="329" y="632" width="88" height="18" rx="4"/>
+    <text class="lbl-txt manual" x="373" y="641" text-anchor="middle" dominant-baseline="central">Orders</text>
+
+    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 833 688 L 833 591" marker-end="url(#ah-manual-2)"/>
+    <rect class="lbl-bg" x="743" y="632" width="180" height="18" rx="4"/>
+    <text class="lbl-txt manual" x="833" y="641" text-anchor="middle" dominant-baseline="central">Catalog · Customers · Prices</text>
+  </svg>
+</div>
+
+
+<div class="legenda">
+  <div class="leg-item"><span class="sw native"></span> Native VTEX</div>
+  <div class="leg-item"><span class="sw tp"></span> Third-party / Back office</div>
+  <div class="leg-item"><span class="sw opt"></span> Optional module</div>
+  <div class="leg-item"><span class="ln manual"></span> Manual step</div>
+</div>
+
+<div class="dealer-wrap">
+  <div class="dealer-heading">Dealer network — independent, no relationship to the account above</div>
+  <div class="dealer-stage">
+    <div class="template-box box-abs" style="left:450px; top:16px; width:300px; height:44px;">Shared storefront template<small>same FastStore/CMS build — cloned per dealer</small></div>
+
+    <svg class="overlay" style="position:absolute; top:0; left:0;" width="1200" height="200">
+      <defs>
+        <marker id="ah-tmpl" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="var(--muted)"/>
+        </marker>
+      </defs>
+      <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4" d="M 600 60 L 600 84 L 165 84 L 165 108" marker-end="url(#ah-tmpl)"/>
+      <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4" d="M 600 60 L 600 84 L 465 84 L 465 108" marker-end="url(#ah-tmpl)"/>
+      <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4" d="M 600 60 L 600 84 L 765 84 L 765 108" marker-end="url(#ah-tmpl)"/>
+    </svg>
+
+    <div class="box-node dealer box-abs" style="left:30px; top:108px; width:270px; height:56px;">Dealer account 1<br><small style="font-weight:400;">independent account — no data shared</small></div>
+    <div class="box-node dealer box-abs" style="left:330px; top:108px; width:270px; height:56px;">Dealer account 2<br><small style="font-weight:400;">independent account — no data shared</small></div>
+    <div class="box-node dealer box-abs" style="left:630px; top:108px; width:270px; height:56px;">Dealer account 3<br><small style="font-weight:400;">independent account — no data shared</small></div>
+    <div class="box-node box-abs" style="left:930px; top:116px; width:60px; height:44px; color:var(--muted); font-weight:400;">···</div>
+  </div>
+</div>
+
+<!-- ============================= DETAIL: GOMADDIL ORDER & INVENTORY FLOW ============================= -->
+<style>
+  .flow-box {
+    background: #fff; border: 1.5px solid var(--ink); border-radius: 10px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; font-weight: 700; font-size: 13px; color: var(--ink); padding: 8px;
+  }
+  .flow-box.manual { border: 1.5px dashed var(--muted); color: var(--muted); }
+  .flow-box.native { background: var(--box-fill); border: 1.5px solid var(--vtex); }
+  .flow-box.sync { border: 1.5px solid var(--ink); }
+  .flow-box small { font-weight: 400; font-size: 11px; margin-top: 4px; color: var(--muted); display: block; }
+  .flow-stage {
+    position: relative; width: 1200px;
+    border: 2px solid var(--ink); border-radius: 18px; background: #fff;
+  }
+  .option-heading { font-size: 15px; font-weight: 700; color: var(--ink); margin: 22px 0 10px; width: 1200px; }
+  .option-heading.pink { color: var(--vtex-deep); }
+</style>
+
+<div class="dealer-wrap">
+  <div class="dealer-heading">Order &amp; inventory flow — two options</div>
+  <div class="board-sub" style="width:1200px; margin:-4px 0 4px;">Today there is no real-time stock check between VTEX and the vendor network, and no official system-of-record inventory. Two ways to handle that going forward:</div>
+
+  <div class="option-heading">Option 1 — Manual (current state)</div>
+  <div class="flow-stage" style="height:580px;">
+    <div class="flow-box box-abs" style="left:30px; top:30px; width:200px; height:64px;">Customer places order<small>storefront</small></div>
+    <div class="flow-box native box-abs" style="left:270px; top:30px; width:300px; height:64px;">OMS accepts order<small>infinite inventory — no live stock check</small></div>
+    <div class="flow-box manual box-abs" style="left:650px; top:30px; width:230px; height:64px;">Staff exports order<small>Excel — manual</small></div>
+
+    <div class="flow-box manual box-abs" style="left:650px; top:150px; width:230px; height:64px;">Staff enters order<small>ERP — manual</small></div>
+    <div class="flow-box manual box-abs" style="left:272px; top:150px; width:300px; height:64px;">Staff checks stock<small>Vendor A (primary) — no system integration</small></div>
+
+    <div class="flow-box box-abs" style="left:100px; top:270px; width:280px; height:70px;">Available at Vendor A<small>ship order</small></div>
+    <div class="flow-box manual box-abs" style="left:440px; top:270px; width:420px; height:70px;">NOT available at Vendor A<small>staff switches vendor — checks Vendor B next</small></div>
+
+    <div class="flow-box box-abs" style="left:460px; top:390px; width:280px; height:64px;">Available at Vendor B<small>ship order</small></div>
+    <div class="flow-box manual box-abs" style="left:760px; top:390px; width:410px; height:70px;">NOT available at either vendor<small>two options below</small></div>
+
+    <div class="flow-box manual box-abs" style="left:760px; top:500px; width:180px; height:60px;">Change due date<small>keep the order open</small></div>
+    <div class="flow-box manual box-abs" style="left:960px; top:500px; width:200px; height:60px;">Cancel order<small>customer called directly, no automated notice</small></div>
+
+    <svg class="overlay" style="position:absolute; top:0; left:0;" width="1200" height="580">
+      <defs>
+        <marker id="ah-flow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="var(--vtex)"/>
+        </marker>
+        <marker id="ah-flow-m" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="var(--muted)"/>
+        </marker>
+      </defs>
+      <path fill="none" stroke="var(--vtex)" stroke-width="2" d="M 230 62 L 270 62" marker-end="url(#ah-flow)"/>
+      <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 570 62 L 650 62" marker-end="url(#ah-flow-m)"/>
+      <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 765 94 L 765 150" marker-end="url(#ah-flow-m)"/>
+      <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 650 182 L 572 182" marker-end="url(#ah-flow-m)"/>
+      <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 422 214 L 422 245 L 240 245 L 240 270" marker-end="url(#ah-flow-m)"/>
+      <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 422 214 L 422 245 L 650 245 L 650 270" marker-end="url(#ah-flow-m)"/>
+      <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 650 340 L 650 365 L 600 365 L 600 390" marker-end="url(#ah-flow-m)"/>
+      <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 650 340 L 650 365 L 965 365 L 965 390" marker-end="url(#ah-flow-m)"/>
+      <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 965 460 L 965 480 L 850 480 L 850 500" marker-end="url(#ah-flow-m)"/>
+      <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 965 460 L 965 480 L 1060 480 L 1060 500" marker-end="url(#ah-flow-m)"/>
+    </svg>
+  </div>
+
+  <div class="option-heading pink">Option 2 — Integration (middleware)</div>
+  <div class="board-sub" style="width:1200px; margin:-4px 0 12px;">Sequence matters here: the integration app pulls Catalog, Price and Inventory from the ERP and pushes them into VTEX asynchronously, continuously, <b>before</b> any order happens. By the time a customer checks out, that data is already in VTEX — no live call needed at checkout.</div>
+  <div class="flow-stage" style="height:320px;">
+    <div class="option-heading" style="margin:14px 0 6px; font-size:13px; color:var(--muted); position:absolute; left:30px; top:14px;">Before checkout — async, continuous</div>
+    <div class="flow-box box-abs" style="left:30px; top:44px; width:200px; height:70px;">ERP</div>
+    <div class="flow-box sync box-abs" style="left:312px; top:44px; width:340px; height:70px;">Integration Layer<small>reads ERP, pushes into VTEX</small></div>
+
+    <div class="option-heading" style="margin:14px 0 6px; font-size:13px; color:var(--muted); position:absolute; left:30px; top:174px;">At checkout</div>
+    <div class="flow-box box-abs" style="left:30px; top:204px; width:200px; height:70px;">Customer places order<small>storefront</small></div>
+    <div class="flow-box native box-abs" style="left:310px; top:204px; width:340px; height:70px;">VTEX — OMS accepts order<small>reads price &amp; inventory from VTEX itself — already synced, no live call</small></div>
+
+    <svg class="overlay" style="position:absolute; top:0; left:0;" width="1200" height="320">
+      <defs>
+        <marker id="ah-sync-arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="var(--ink)"/>
+        </marker>
+      </defs>
+      <path fill="none" stroke="var(--ink)" stroke-width="2" d="M 230 68 L 310 68" marker-end="url(#ah-sync-arrow)"/>
+      <rect class="lbl-bg" x="212" y="59" width="96" height="16" rx="4"/>
+      <text class="lbl-txt" x="260" y="67" text-anchor="middle" dominant-baseline="central" fill="var(--ink)" style="font-size:10.5px;">Catalog · Customers</text>
+
+      <path fill="none" stroke="var(--ink)" stroke-width="2" d="M 310 96 L 230 96" marker-end="url(#ah-sync-arrow)"/>
+      <rect class="lbl-bg" x="235" y="98" width="60" height="16" rx="4"/>
+      <text class="lbl-txt" x="265" y="106" text-anchor="middle" dominant-baseline="central" fill="var(--ink)">Orders</text>
+
+      <path fill="none" stroke="var(--ink)" stroke-width="2" d="M 230 239 L 310 239" marker-end="url(#ah-sync-arrow)"/>
+
+      <path fill="none" stroke="var(--ink)" stroke-width="2" d="M 420 114 L 420 204" marker-end="url(#ah-sync-arrow)"/>
+      <rect class="lbl-bg" x="300" y="150" width="240" height="18" rx="4"/>
+      <text class="lbl-txt" x="420" y="159" text-anchor="middle" dominant-baseline="central" fill="var(--ink)">Catalog · Price · Inventory — pre-synced</text>
+
+      <path fill="none" stroke="var(--ink)" stroke-width="2" d="M 560 204 L 560 114" marker-end="url(#ah-sync-arrow)"/>
+      <rect class="lbl-bg" x="565" y="150" width="60" height="18" rx="4"/>
+      <text class="lbl-txt" x="595" y="159" text-anchor="middle" dominant-baseline="central" fill="var(--ink)">Orders</text>
+    </svg>
+  </div>
+</div>
+
+
+</body>
+</html>
