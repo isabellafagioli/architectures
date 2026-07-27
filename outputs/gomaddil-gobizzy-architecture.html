@@ -213,17 +213,17 @@
     <rect class="lbl-bg" x="329" y="632" width="88" height="18" rx="4"/>
     <text class="lbl-txt manual" x="373" y="641" text-anchor="middle" dominant-baseline="central">Orders</text>
 
-    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 833 688 L 833 591" marker-end="url(#ah-manual-1)"/>
-    <rect class="lbl-bg" x="743" y="632" width="180" height="18" rx="4"/>
-    <text class="lbl-txt manual" x="833" y="641" text-anchor="middle" dominant-baseline="central">Catalog · Customers · Prices</text>
+    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 830 685 L 830 615 L 365 615 L 365 590" marker-end="url(#ah-manual-1)"/>
+    <rect class="lbl-bg" x="508" y="606" width="180" height="18" rx="4"/>
+    <text class="lbl-txt manual" x="598" y="615" text-anchor="middle" dominant-baseline="central">Catalog · Customers · Prices</text>
   </svg>
 </div>
 
 <!-- ============================= BOARD 2: GOMADDIL ============================= -->
 <div class="board-title">GoMaddil — solution architecture <span style="color:var(--vtex-deep);">· separate VTEX account</span></div>
-<div class="board-sub">B2B wholesale/dealer portal — account-specific pricing &amp; catalog; infinite inventory; manual export/entry. <b>No B2B hierarchy needed</b> (confirmed Jul 27 call — no Organizations/Cost Centers/Users tree).</div>
+<div class="board-sub">B2B wholesale/dealer portal — Cost Center, Contracts, Users, Customer Pricing; infinite inventory; manual export/entry.</div>
 
-<div class="stage" id="stage-gomaddil" style="height:800px;">
+<div class="stage" id="stage-gomaddil" style="height:920px;">
 
   <div class="panel-heading box-abs" style="left:40px; top:80px;">Merchant Channels</div>
   <div class="panel core box-abs" style="left:40px; top:110px; width:1120px; height:100px;">
@@ -232,61 +232,71 @@
   </div>
 
   <div class="panel-heading pink box-abs" style="left:40px; top:260px;">VTEX Core Services — single account</div>
-  <div class="panel core box-abs" style="left:40px; top:290px; width:650px; height:300px;">
+  <div class="panel core box-abs" style="left:40px; top:290px; width:650px; height:420px;">
 
-    <div class="pill box-abs" style="left:16px;  top:20px;  width:140px; height:56px;">Catalog<br><small>via Utilize (PIM)</small></div>
-    <div class="pill box-abs" style="left:164px; top:20px;  width:140px; height:56px;">Checkout</div>
-    <div class="pill box-abs" style="left:312px; top:20px;  width:140px; height:56px;">OMS<br><small>infinite inventory</small></div>
+    <div class="org-box box-abs" style="left:16px; top:20px; width:618px; height:104px;">
+      <div class="org-heading">
+        <span class="t1">B2B Core Modules</span>
+      </div>
+      <div class="pill box-abs" style="left:7px;   top:36px; width:145px; height:56px;">Cost Center</div>
+      <div class="pill box-abs" style="left:160px; top:36px; width:145px; height:56px;">Contracts</div>
+      <div class="pill box-abs" style="left:313px; top:36px; width:145px; height:56px;">Users</div>
+      <div class="pill box-abs" style="left:466px; top:36px; width:145px; height:56px;">Customer Pricing</div>
+    </div>
 
-    <div class="pill box-abs" style="left:16px;  top:84px; width:140px; height:56px;">Subscriptions</div>
-    <div class="pill box-abs" style="left:164px; top:84px; width:140px; height:56px;">Promotions</div>
-    <div class="pill box-abs" style="left:312px; top:84px; width:140px; height:56px;">CMS</div>
+    <div class="pill box-abs" style="left:16px;  top:140px; width:140px; height:56px;">Catalog<br><small>via Utilize (PIM)</small></div>
+    <div class="pill box-abs" style="left:164px; top:140px; width:140px; height:56px;">Checkout</div>
+    <div class="pill box-abs" style="left:312px; top:140px; width:140px; height:56px;">OMS<br><small>infinite inventory</small></div>
 
-    <div class="pill box-abs" style="left:16px;  top:148px; width:140px; height:56px;">Customers</div>
-    <div class="pill box-abs" style="left:164px; top:148px; width:140px; height:56px;">Message</div>
-    <div class="pill box-abs" style="left:312px; top:148px; width:140px; height:56px;">Authentication</div>
+    <div class="pill box-abs" style="left:16px;  top:204px; width:140px; height:56px;">Subscriptions</div>
+    <div class="pill box-abs" style="left:164px; top:204px; width:140px; height:56px;">Promotions</div>
+    <div class="pill box-abs" style="left:312px; top:204px; width:140px; height:56px;">CMS</div>
 
-    <div class="pill box-abs" style="left:16px;  top:212px; width:140px; height:56px;">Search</div>
-    <div class="pill box-abs" style="left:164px; top:212px; width:140px; height:56px;">Payment Hub</div>
-    <div class="pill box-abs" style="left:312px; top:212px; width:140px; height:56px;">Pricing Hub<br><small>account-specific pricing</small></div>
+    <div class="pill box-abs" style="left:16px;  top:268px; width:140px; height:56px;">Customers</div>
+    <div class="pill box-abs" style="left:164px; top:268px; width:140px; height:56px;">Message</div>
+    <div class="pill box-abs" style="left:312px; top:268px; width:140px; height:56px;">Authentication</div>
 
-    <div class="vtexio-box box-abs" style="left:468px; top:20px; width:150px; height:248px;">
+    <div class="pill box-abs" style="left:16px;  top:332px; width:140px; height:56px;">Search</div>
+    <div class="pill box-abs" style="left:164px; top:332px; width:140px; height:56px;">Payment Hub</div>
+    <div class="pill box-abs" style="left:312px; top:332px; width:140px; height:56px;">Pricing Hub<br><small>account-specific pricing</small></div>
+
+    <div class="vtexio-box box-abs" style="left:468px; top:140px; width:150px; height:248px;">
       <div class="vtexio-heading">
         <span class="t1">VTEX IO</span>
         <span class="t2">Apps PaaS</span>
       </div>
       <div class="pill box-abs" style="left:10px; top:40px;  width:130px; height:52px;">Custom Admin</div>
       <div class="pill box-abs" style="left:10px; top:100px; width:130px; height:52px;">Order Status App<br><small>reads updates sheet</small></div>
-      <div class="pill box-abs" style="left:10px; top:170px; width:130px; height:52px;">Custom Backend service (API)</div>
+      <div class="pill box-abs" style="left:10px; top:160px; width:130px; height:52px;">Custom Backend service (API)</div>
     </div>
   </div>
 
   <div class="panel-heading box-abs" style="left:720px; top:260px;">3rd Party Optional</div>
-  <div class="panel box-abs" style="left:720px; top:290px; width:440px; height:300px;">
-    <div class="box-node optional-bo box-abs" style="left:20px; top:110px; width:400px; height:52px;">Grand &amp; Toy — external seller<br><small>optional</small></div>
-    <div class="box-node optional-bo box-abs" style="left:20px; top:176px; width:400px; height:52px;">SP Richards — external seller<br><small>optional</small></div>
-    <div class="note box-abs" style="left:20px; top:238px; width:400px;">Not yet scoped — would replace the manual flow below with automatic sourcing/fulfillment.</div>
+  <div class="panel box-abs" style="left:720px; top:290px; width:440px; height:420px;">
+    <div class="box-node optional-bo box-abs" style="left:20px; top:170px; width:400px; height:52px;">Grand &amp; Toy — external seller<br><small>optional</small></div>
+    <div class="box-node optional-bo box-abs" style="left:20px; top:236px; width:400px; height:52px;">SP Richards — external seller<br><small>optional</small></div>
+    <div class="note box-abs" style="left:20px; top:298px; width:400px;">Not yet scoped — would replace the manual flow below with automatic sourcing/fulfillment.</div>
   </div>
 
-  <div class="panel-heading box-abs" style="left:40px; top:630px;">Merchant Back Office</div>
-  <div class="panel back box-abs" style="left:40px; top:660px; width:1120px; height:110px;">
+  <div class="panel-heading box-abs" style="left:40px; top:750px;">Merchant Back Office</div>
+  <div class="panel back box-abs" style="left:40px; top:780px; width:1120px; height:110px;">
     <div class="box-node backoffice box-abs" style="left:200px; top:25px; width:260px; height:60px;">ERP</div>
     <div class="box-node optional-bo box-abs" style="left:660px; top:25px; width:260px; height:60px;">Manual input<br><small>spreadsheet upload</small></div>
   </div>
 
-  <svg class="overlay" width="1200" height="800">
+  <svg class="overlay" width="1200" height="920">
     <defs>
       <marker id="ah-manual-2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
         <path d="M0,0 L6,3 L0,6 Z" fill="var(--muted)"/>
       </marker>
     </defs>
-    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 373 591 L 373 688" marker-end="url(#ah-manual-2)"/>
-    <rect class="lbl-bg" x="329" y="632" width="88" height="18" rx="4"/>
-    <text class="lbl-txt manual" x="373" y="641" text-anchor="middle" dominant-baseline="central">Orders</text>
+    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 373 711 L 373 808" marker-end="url(#ah-manual-2)"/>
+    <rect class="lbl-bg" x="329" y="752" width="88" height="18" rx="4"/>
+    <text class="lbl-txt manual" x="373" y="761" text-anchor="middle" dominant-baseline="central">Orders</text>
 
-    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 833 688 L 833 591" marker-end="url(#ah-manual-2)"/>
-    <rect class="lbl-bg" x="743" y="632" width="180" height="18" rx="4"/>
-    <text class="lbl-txt manual" x="833" y="641" text-anchor="middle" dominant-baseline="central">Catalog · Customers · Prices</text>
+    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 830 805 L 830 735 L 365 735 L 365 710" marker-end="url(#ah-manual-2)"/>
+    <rect class="lbl-bg" x="508" y="726" width="180" height="18" rx="4"/>
+    <text class="lbl-txt manual" x="598" y="735" text-anchor="middle" dominant-baseline="central">Catalog · Customers · Prices</text>
   </svg>
 </div>
 
