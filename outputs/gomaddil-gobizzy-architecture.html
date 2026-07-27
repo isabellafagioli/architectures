@@ -153,7 +153,7 @@
 <div class="board-title">GoBizzy — solution architecture <span style="color:var(--vtex-deep);">· separate VTEX account</span></div>
 <div class="board-sub">B2C storefront (.com) — simple, out-of-the-box, infinite inventory, no B2B entities.</div>
 
-<div class="stage" id="stage-gobizzy" style="height:810px;">
+<div class="stage" id="stage-gobizzy" style="height:850px;">
 
   <div class="panel-heading box-abs" style="left:40px; top:80px;">Merchant Channels</div>
   <div class="panel core box-abs" style="left:40px; top:110px; width:1120px; height:100px;">
@@ -197,26 +197,29 @@
     <div class="note box-abs" style="left:20px; top:222px; width:400px;">Not yet scoped — would replace the manual flow below with automatic sourcing/fulfillment. GoBizzy sells the Grand &amp; Toy catalog directly (not confirmed to also depend on SP Richards, unlike GoMaddil).</div>
   </div>
 
-  <div class="panel-heading box-abs" style="left:40px; top:630px;">Merchant Back Office <small style="font-weight:400; color:var(--muted); font-size:12px;">— client-owned</small></div>
-  <div class="panel back box-abs" style="left:40px; top:660px; width:1120px; height:110px;">
-    <div class="box-node backoffice box-abs" style="left:120px; top:25px; width:280px; height:60px;">IOA / HFA<br><small style="font-weight:400;">ERP — Gold Medal uses IOA; Granite Toy uses HFA</small></div>
-    <div class="box-node optional-bo box-abs" style="left:440px; top:25px; width:260px; height:60px;">Manual input<br><small>order download / spreadsheet</small></div>
-    <div class="note box-abs" style="left:730px; top:28px; width:350px;">Out of scope for VTEX: <b>AP/AR</b> and <b>general ledger</b> (covered by the ERP, not VTEX). No warehouse / no inventory visibility today.</div>
+  <div class="panel-heading box-abs" style="left:40px; top:630px;">Merchant Back Office <small style="font-weight:400; color:var(--muted); font-size:12px;">— client-owned / not VTEX</small></div>
+  <div class="panel back box-abs" style="left:40px; top:660px; width:1120px; height:155px;">
+    <div class="box-node backoffice box-abs" style="left:30px; top:16px; width:260px; height:52px;">IOA / HFA<br><small style="font-weight:400;">ERP — GoMaddil uses IOA; HFA = Granite Toy</small></div>
+    <div class="box-node optional-bo box-abs" style="left:860px; top:16px; width:220px; height:52px;">Manual input<br><small>order download / spreadsheet</small></div>
+    <div class="box-node optional-bo box-abs" style="left:30px; top:86px; width:240px; height:48px;">AR / AP</div>
+    <div class="box-node optional-bo box-abs" style="left:290px; top:86px; width:240px; height:48px;">Invoicing</div>
+    <div class="box-node optional-bo box-abs" style="left:550px; top:86px; width:250px; height:48px;">Reconciliation</div>
+    <div class="box-node optional-bo box-abs" style="left:820px; top:86px; width:260px; height:48px;">General ledger</div>
   </div>
 
-  <svg class="overlay" width="1200" height="810">
+  <svg class="overlay" width="1200" height="850">
     <defs>
       <marker id="ah-manual-1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
         <path d="M0,0 L6,3 L0,6 Z" fill="var(--muted)"/>
       </marker>
     </defs>
-    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 300 591 L 300 685" marker-end="url(#ah-manual-1)"/>
-    <rect class="lbl-bg" x="256" y="630" width="88" height="18" rx="4"/>
-    <text class="lbl-txt manual" x="300" y="639" text-anchor="middle" dominant-baseline="central">Orders</text>
+    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 200 591 L 200 686" marker-end="url(#ah-manual-1)"/>
+    <rect class="lbl-bg" x="156" y="630" width="88" height="18" rx="4"/>
+    <text class="lbl-txt manual" x="200" y="639" text-anchor="middle" dominant-baseline="central">Orders</text>
 
-    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 570 685 L 570 615 L 520 615 L 520 590" marker-end="url(#ah-manual-1)"/>
-    <rect class="lbl-bg" x="490" y="606" width="180" height="18" rx="4"/>
-    <text class="lbl-txt manual" x="580" y="615" text-anchor="middle" dominant-baseline="central">Catalog · Customers · Prices</text>
+    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 1010 676 L 1010 620 L 545 620 L 545 590" marker-end="url(#ah-manual-1)"/>
+    <rect class="lbl-bg" x="688" y="611" width="180" height="18" rx="4"/>
+    <text class="lbl-txt manual" x="778" y="620" text-anchor="middle" dominant-baseline="central">Catalog · Customers · Prices</text>
   </svg>
 </div>
 
@@ -224,7 +227,7 @@
 <div class="board-title">GoMaddil — solution architecture <span style="color:var(--vtex-deep);">· separate VTEX account</span></div>
 <div class="board-sub">B2B wholesale/dealer portal — Cost Center, Contracts, Users, Customer Pricing; infinite inventory; manual export/entry.</div>
 
-<div class="stage" id="stage-gomaddil" style="height:930px;">
+<div class="stage" id="stage-gomaddil" style="height:970px;">
 
   <div class="panel-heading box-abs" style="left:40px; top:80px;">Merchant Channels</div>
   <div class="panel core box-abs" style="left:40px; top:110px; width:1120px; height:100px;">
@@ -279,26 +282,29 @@
     <div class="note box-abs" style="left:20px; top:298px; width:400px;">Not yet scoped — would replace the manual flow below with automatic sourcing/fulfillment.</div>
   </div>
 
-  <div class="panel-heading box-abs" style="left:40px; top:750px;">Merchant Back Office <small style="font-weight:400; color:var(--muted); font-size:12px;">— client-owned</small></div>
-  <div class="panel back box-abs" style="left:40px; top:780px; width:1120px; height:110px;">
-    <div class="box-node backoffice box-abs" style="left:120px; top:25px; width:280px; height:60px;">IOA / HFA<br><small style="font-weight:400;">ERP — Gold Medal uses IOA; Granite Toy uses HFA</small></div>
-    <div class="box-node optional-bo box-abs" style="left:440px; top:25px; width:260px; height:60px;">Manual input<br><small>order download / spreadsheet</small></div>
-    <div class="note box-abs" style="left:730px; top:28px; width:350px;">Out of scope for VTEX: <b>AP/AR</b> and <b>general ledger</b> (covered by the ERP, not VTEX). No warehouse / no inventory visibility today.</div>
+  <div class="panel-heading box-abs" style="left:40px; top:750px;">Merchant Back Office <small style="font-weight:400; color:var(--muted); font-size:12px;">— client-owned / not VTEX</small></div>
+  <div class="panel back box-abs" style="left:40px; top:780px; width:1120px; height:155px;">
+    <div class="box-node backoffice box-abs" style="left:30px; top:16px; width:260px; height:52px;">IOA / HFA<br><small style="font-weight:400;">ERP — GoMaddil uses IOA; HFA = Granite Toy</small></div>
+    <div class="box-node optional-bo box-abs" style="left:860px; top:16px; width:220px; height:52px;">Manual input<br><small>order download / spreadsheet</small></div>
+    <div class="box-node optional-bo box-abs" style="left:30px; top:86px; width:240px; height:48px;">AR / AP</div>
+    <div class="box-node optional-bo box-abs" style="left:290px; top:86px; width:240px; height:48px;">Invoicing</div>
+    <div class="box-node optional-bo box-abs" style="left:550px; top:86px; width:250px; height:48px;">Reconciliation</div>
+    <div class="box-node optional-bo box-abs" style="left:820px; top:86px; width:260px; height:48px;">General ledger</div>
   </div>
 
-  <svg class="overlay" width="1200" height="930">
+  <svg class="overlay" width="1200" height="970">
     <defs>
       <marker id="ah-manual-2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
         <path d="M0,0 L6,3 L0,6 Z" fill="var(--muted)"/>
       </marker>
     </defs>
-    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 300 711 L 300 805" marker-end="url(#ah-manual-2)"/>
-    <rect class="lbl-bg" x="256" y="750" width="88" height="18" rx="4"/>
-    <text class="lbl-txt manual" x="300" y="759" text-anchor="middle" dominant-baseline="central">Orders</text>
+    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 200 711 L 200 806" marker-end="url(#ah-manual-2)"/>
+    <rect class="lbl-bg" x="156" y="750" width="88" height="18" rx="4"/>
+    <text class="lbl-txt manual" x="200" y="759" text-anchor="middle" dominant-baseline="central">Orders</text>
 
-    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 570 805 L 570 735 L 520 735 L 520 710" marker-end="url(#ah-manual-2)"/>
-    <rect class="lbl-bg" x="490" y="726" width="180" height="18" rx="4"/>
-    <text class="lbl-txt manual" x="580" y="735" text-anchor="middle" dominant-baseline="central">Catalog · Customers · Prices</text>
+    <path fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" d="M 1010 796 L 1010 740 L 545 740 L 545 710" marker-end="url(#ah-manual-2)"/>
+    <rect class="lbl-bg" x="688" y="722" width="180" height="18" rx="4"/>
+    <text class="lbl-txt manual" x="778" y="731" text-anchor="middle" dominant-baseline="central">Catalog · Customers · Prices</text>
   </svg>
 </div>
 
